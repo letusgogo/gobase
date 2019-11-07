@@ -1,7 +1,6 @@
 package goconf
 
 import (
-	"encoding/json"
 	"fmt"
 	"testing"
 )
@@ -19,27 +18,14 @@ func TestNewConfigLoaderForApollo(t *testing.T) {
 	fmt.Println(result)
 }
 
-type regionInfoStu map[string](map[string](map[string]string))
-
 func TestNewConfigLoaderForConfig(t *testing.T) {
-
-	var regionInfo regionInfoStu
-
-	//noinspection GoRedundantParens
-	loader, _ := NewConfigLoader("apollo")
-	properties, err := loader.Load("http://172.16.248.36:8181/configs/httpdns/region-info/APP_ALL")
+	loader, _ := NewConfigLoader(FromJsonFile)
+	properties, err := loader.Load("./config.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	bytes := properties.GetString("region", "")
-
-	fmt.Println(string(bytes))
-
-	err = json.Unmarshal([]byte(bytes), &regionInfo)
-	if err != nil {
-		t.Fatal(err)
-	}
+	val := properties.GetString("RedisPass", "")
+	fmt.Println(val)
 }
 
 func TestProperties_getString_FromApollo(t *testing.T) {
