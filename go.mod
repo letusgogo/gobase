@@ -1,4 +1,4 @@
-module gitee.com/freeidea/gobase
+module github.com:iothink/gobase
 
 go 1.12
 
