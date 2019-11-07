@@ -2,7 +2,8 @@ package gohttp
 
 import (
 	"bytes"
-	"gitlab.com/TuyaBEMiddleWare/go-toolset/golog"
+	"github.com/iothink/gobase/golog"
+	"go.uber.org/zap/zapcore"
 	"io/ioutil"
 	"net/http"
 	"testing"
@@ -11,7 +12,7 @@ import (
 
 // http 服务器
 func TestNewHttpServer(t *testing.T) {
-	golog.InitLog("httpserver")
+	golog.InitLog("httpserver", zapcore.DebugLevel)
 	hand := HandlerMap{
 		"/a": handA,
 		"/b": handB,
