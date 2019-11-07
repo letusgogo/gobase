@@ -1,4 +1,4 @@
-module github.com:iothink/gobase
+module github.com/iothink/gobase
 
 go 1.12
 
