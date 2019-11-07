@@ -1,4 +1,4 @@
-module gitlab.com/TuyaBEMiddleWare/go-toolset
+module gitee.com/freeidea/gobase
 
 go 1.12
 
