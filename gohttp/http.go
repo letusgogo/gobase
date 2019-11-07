@@ -3,7 +3,7 @@ package gohttp
 import (
 	"context"
 	"fmt"
-	"gitlab.com/TuyaBEMiddleWare/go-toolset/golog"
+	"github.com/iothink/gobase/golog"
 	"go.uber.org/zap"
 	"net/http"
 	"os"
