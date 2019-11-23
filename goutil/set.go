@@ -1,0 +1,52 @@
+package goutil
+
+import (
+	"fmt"
+)
+
+type Empty struct{}
+
+var empty Empty
+
+//set类型
+type Set struct {
+	m map[interface{}]Empty
+}
+
+func NewSet() *Set {
+	return &Set{
+		m: map[interface{}]Empty{},
+	}
+}
+
+//添加元素
+func (s *Set) Add(vals ...interface{}) {
+	if len(vals) == 0 {
+		return
+	}
+	for _, v := range vals {
+		s.m[v] = empty
+	}
+}
+
+//删除元素
+func (s *Set) Remove(val interface{}) {
+	delete(s.m, val)
+}
+
+//获取长度
+func (s *Set) Len() int {
+	return len(s.m)
+}
+
+//清空set
+func (s *Set) Clear() {
+	s.m = make(map[interface{}]Empty)
+}
+
+//遍历set
+func (s *Set) Traverse() {
+	for v := range s.m {
+		fmt.Println(v)
+	}
+}
