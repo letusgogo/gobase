@@ -34,11 +34,11 @@ var (
 	ErrParam = &ErrInfo{1, "param error", nil}
 )
 
-func WriteRpcRsp(rsp interface{}, err RpcError, datas map[string]interface{}) {
+func WriteRpcRsp(rspPtr interface{}, err RpcError, datas map[string]interface{}) {
 	if nil == datas {
 		datas = make(map[string]interface{})
 	}
 	datas["Ret"] = err.GetRet()
 	datas["Msg"] = err.GetMsg()
-	SetStructVal(rsp, datas)
+	SetStructVals(rspPtr, datas)
 }

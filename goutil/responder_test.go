@@ -24,7 +24,7 @@ type GetDpRsp struct {
 	Dps   []*DpInfo `protobuf:"bytes,4,rep,name=dps,proto3" json:"dps"`
 }
 
-func TestGeneratorRpcRsp(t *testing.T) {
+func TestWriteRpcRsp(t *testing.T) {
 	rsp := new(GetDpRsp)
 	dps := make([]*DpInfo, 0)
 	dp1 := DpInfo{
@@ -59,5 +59,20 @@ func TestGeneratorRpcRsp(t *testing.T) {
 
 	if len(rsp.Dps) != 2 {
 		t.Error("rsp.Dps is not equal 2")
+	}
+}
+
+func TestWriteRpcRspNil(t *testing.T) {
+	rsp := new(GetDpRsp)
+
+	WriteRpcRsp(rsp, ErrNot, nil)
+
+	fmt.Println(rsp)
+	if rsp.Ret != 0 {
+		t.Error("rsp.Ret is not 0")
+	}
+
+	if rsp.Msg != "success" {
+		t.Error("rsp.Ret is not success")
 	}
 }

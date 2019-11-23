@@ -24,6 +24,14 @@ type GetDpRsp2 struct {
 	Dps   []*DpInfo2 `protobuf:"bytes,4,rep,name=dps,proto3" json:"dps"`
 }
 
+// 响应数据点请求
+type GetDpRsp3 struct {
+	Ret   int32      `protobuf:"varint,1,opt,name=ret,proto3" json:"ret"`
+	Msg   string     `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg"`
+	DevId string     `protobuf:"bytes,3,opt,name=devId,proto3" json:"devId"`
+	Dps   []*DpInfo2 `protobuf:"bytes,4,rep,name=dps,proto3" json:"dps"`
+}
+
 func (g *GetDpRsp2) SetRet(ret int32) {
 	g.Ret = ret
 }
@@ -50,7 +58,7 @@ func TestSetStructVal(t *testing.T) {
 	}
 	dps = append(dps, &dp1)
 	dps = append(dps, &dp2)
-	SetStructVal(rsp,
+	SetStructVals(rsp,
 		map[string]interface{}{
 			"Dps":   dps,
 			"Ret":   int32(1),
@@ -59,4 +67,47 @@ func TestSetStructVal(t *testing.T) {
 	)
 
 	fmt.Println(*rsp)
+}
+
+func TestStructCopy(t *testing.T) {
+	dstRsp := new(GetDpRsp2)
+	srcRsp := new(GetDpRsp3)
+
+	dps := make([]*DpInfo2, 0)
+	dp1 := DpInfo2{
+		DpId:    0,
+		Ename:   "yuhaiyang",
+		Name:    "于",
+		RawData: nil,
+	}
+
+	dp2 := DpInfo2{
+		DpId:    0,
+		Ename:   "pear",
+		Name:    "周",
+		RawData: nil,
+	}
+	dps = append(dps, &dp1)
+	dps = append(dps, &dp2)
+
+	srcRsp.Ret = 0
+	srcRsp.Msg = "succ"
+	srcRsp.Dps = dps
+	StructCopy(dstRsp, srcRsp, "Msg", "Dps")
+	if dstRsp.Msg != "" {
+		t.Error("Msg shoud empty")
+	}
+	if dstRsp.Dps != nil {
+		t.Error("Dps shoud nil")
+	}
+
+	StructCopy(dstRsp, srcRsp)
+	if dstRsp.Msg == "" {
+		t.Error("Msg shoud not empty")
+	}
+	if dstRsp.Dps == nil {
+		t.Error("Dps shoud not empty")
+	}
+
+	fmt.Println(*dstRsp)
 }
