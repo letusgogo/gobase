@@ -51,7 +51,7 @@ func TestGeneratorRpcRsp(t *testing.T) {
 	dps = append(dps, &dp1)
 	dps = append(dps, &dp2)
 
-	GeneratorRpcRsp(rsp, ErrNot, map[string]interface{}{
+	WriteRpcRsp(rsp, ErrNot, map[string]interface{}{
 		"DevId": "d12312",
 		"Dps":   dps,
 	})
