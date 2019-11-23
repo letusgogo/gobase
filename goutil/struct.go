@@ -3,6 +3,9 @@ package goutil
 import "reflect"
 
 func SetStructVal(rsp interface{}, datas map[string]interface{}) {
+	if nil == datas {
+		return
+	}
 	rType := reflect.TypeOf(rsp)
 	// rsp 要为指针才能改变值
 	if rType.Kind() != reflect.Ptr {
