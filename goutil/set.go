@@ -50,3 +50,9 @@ func (s *Set) Traverse() {
 		fmt.Println(v)
 	}
 }
+
+// 查询是否包含
+func (s *Set) Contains(v interface{}) bool {
+	_, ok := s.m[v]
+	return ok
+}
