@@ -35,6 +35,9 @@ var (
 )
 
 func WriteRpcRsp(rsp interface{}, err RpcError, datas map[string]interface{}) {
+	if nil == datas {
+		datas = make(map[string]interface{})
+	}
 	datas["Ret"] = err.GetRet()
 	datas["Msg"] = err.GetMsg()
 	SetStructVal(rsp, datas)
