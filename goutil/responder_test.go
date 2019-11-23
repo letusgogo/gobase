@@ -24,14 +24,6 @@ type GetDpRsp struct {
 	Dps   []*DpInfo `protobuf:"bytes,4,rep,name=dps,proto3" json:"dps"`
 }
 
-func (g *GetDpRsp) SetRet(ret int32) {
-	g.Ret = ret
-}
-
-func (g *GetDpRsp) SetMsg(msg string) {
-	g.Msg = msg
-}
-
 func TestGeneratorRpcRsp(t *testing.T) {
 	rsp := new(GetDpRsp)
 	dps := make([]*DpInfo, 0)
