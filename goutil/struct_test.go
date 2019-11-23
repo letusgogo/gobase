@@ -6,7 +6,7 @@ import (
 )
 
 // 设备的 dp 点
-type DpInfo struct {
+type DpInfo2 struct {
 	DpId    int32  `protobuf:"varint,2,opt,name=dpId,proto3" json:"dpId"`
 	Ename   string `protobuf:"bytes,3,opt,name=ename,proto3" json:"ename"`
 	Name    string `protobuf:"bytes,4,opt,name=name,proto3" json:"name"`
@@ -17,32 +17,32 @@ type DpInfo struct {
 }
 
 // 响应数据点请求
-type GetDpRsp struct {
-	Ret   int32     `protobuf:"varint,1,opt,name=ret,proto3" json:"ret"`
-	Msg   string    `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg"`
-	DevId string    `protobuf:"bytes,3,opt,name=devId,proto3" json:"devId"`
-	Dps   []*DpInfo `protobuf:"bytes,4,rep,name=dps,proto3" json:"dps"`
+type GetDpRsp2 struct {
+	Ret   int32      `protobuf:"varint,1,opt,name=ret,proto3" json:"ret"`
+	Msg   string     `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg"`
+	DevId string     `protobuf:"bytes,3,opt,name=devId,proto3" json:"devId"`
+	Dps   []*DpInfo2 `protobuf:"bytes,4,rep,name=dps,proto3" json:"dps"`
 }
 
-func (g *GetDpRsp) SetRet(ret int32) {
+func (g *GetDpRsp2) SetRet(ret int32) {
 	g.Ret = ret
 }
 
-func (g *GetDpRsp) SetMsg(msg string) {
+func (g *GetDpRsp2) SetMsg(msg string) {
 	g.Msg = msg
 }
 
 func TestSetStructVal(t *testing.T) {
-	rsp := new(GetDpRsp)
-	dps := make([]*DpInfo, 0)
-	dp1 := DpInfo{
+	rsp := new(GetDpRsp2)
+	dps := make([]*DpInfo2, 0)
+	dp1 := DpInfo2{
 		DpId:    0,
 		Ename:   "yuhaiyang",
 		Name:    "于",
 		RawData: nil,
 	}
 
-	dp2 := DpInfo{
+	dp2 := DpInfo2{
 		DpId:    0,
 		Ename:   "pear",
 		Name:    "周",

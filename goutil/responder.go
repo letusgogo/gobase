@@ -33,3 +33,10 @@ var (
 
 	ErrParam = &ErrInfo{1, "param error", nil}
 )
+
+func GeneratorRpcRsp(rsp RpcResponder, err RpcError, datas map[string]interface{}) {
+	rsp.SetRet(err.GetRet())
+	rsp.SetMsg(err.GetMsg())
+
+	SetStructVal(rsp, datas)
+}
