@@ -31,8 +31,8 @@ var (
 	ErrNot    = &ErrInfo{0, "success", nil}
 	ErrUnknow = &ErrInfo{1, "unknow error", nil}
 
-	ErrParam = &ErrInfo{2, "param error", nil}
-	ErrDao   = &ErrInfo{3, "param error", nil}
+	ErrParam    = &ErrInfo{2, "param error", nil}
+	ErrDataBase = &ErrInfo{3, "database error", nil}
 )
 
 func WriteRpcRsp(rspPtr interface{}, err RpcError, datas map[string]interface{}) {
