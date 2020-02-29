@@ -1,9 +1,9 @@
-package gohttp
+package http
 
 import (
 	"context"
 	"fmt"
-	"github.com/iothink/gobase/golog"
+	"github.com/iothink/gobase/log"
 	"go.uber.org/zap"
 	"net/http"
 	"os"
@@ -38,16 +38,16 @@ func (hs *SimpleHttpServer) StartHttpServer(readTimeout, writeTimeout time.Durat
 		Handler:      mux,
 	}
 	fmt.Printf("start httpserver port:(%s)\n", hs.addr)
-	golog.Info("start httpserver ", zap.String("addr", hs.addr))
+	log.Info("start httpserver ", zap.String("addr", hs.addr))
 	err := hs.server.ListenAndServe()
 	if err != nil {
 		if err != http.ErrServerClosed {
 			fmt.Printf("httpserver error port:(%s),err:%s\n", hs.addr, err.Error())
-			golog.Info("httpserver error ", zap.String("addr", hs.addr), zap.Error(err))
+			log.Info("httpserver error ", zap.String("addr", hs.addr), zap.Error(err))
 			panic(err)
 		} else {
 			fmt.Printf("exit httpserver port:(%s) ok,%s\n", hs.addr, err.Error())
-			golog.Info("exit httpserver ", zap.String("addr", hs.addr), zap.Error(err))
+			log.Info("exit httpserver ", zap.String("addr", hs.addr), zap.Error(err))
 		}
 	}
 }
@@ -72,7 +72,7 @@ func (hs *SimpleHttpServer) allHandler(w http.ResponseWriter, req *http.Request)
 	// 如果 发现 panic，判断错误输出错误，否则 继续往上层 panic
 	defer func() {
 		if r := recover(); r != nil {
-			golog.Error("发生未捕获错误:", zap.Any("r", r))
+			log.Error("发生未捕获错误:", zap.Any("r", r))
 			http.Error(
 				w, //向writer汇报错误
 				http.StatusText(http.StatusInternalServerError), //错误描述信息（字符串）
@@ -80,7 +80,7 @@ func (hs *SimpleHttpServer) allHandler(w http.ResponseWriter, req *http.Request)
 		}
 	}()
 	if hs.accessLog {
-		golog.Debug("Access log",
+		log.Debug("Access log",
 			zap.Any("Head", req.Header),
 			zap.Any("Path", req.URL.Path),
 			zap.Any("RawQuery", req.URL.RawQuery))

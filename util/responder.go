@@ -1,4 +1,4 @@
-package goutil
+package util
 
 // rcp 响应接口
 type RpcResponder interface {

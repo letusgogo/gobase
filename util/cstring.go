@@ -1,4 +1,4 @@
-package goutil
+package util
 
 // 获取一个以 \0 结尾的 c 字符串,如果没有则以长度不变
 func GetGStrFromCStr(data []byte) string {
