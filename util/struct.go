@@ -54,6 +54,7 @@ func DeepFields(ifaceType reflect.Type) []reflect.StructField {
 
 // 从 srcStructPtr 复制相同属性值到 dstStructPtr
 // ignore 跳过 ignore 值覆
+// Deprecated 请使用 https://github.com/jinzhu/copier
 func StructCopy(dstStructPtr interface{}, srcStructPtr interface{}, ignoreKey ...string) {
 	srcv := reflect.ValueOf(srcStructPtr)
 	dstv := reflect.ValueOf(dstStructPtr)
