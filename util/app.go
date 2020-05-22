@@ -110,6 +110,9 @@ func InitCmd(updateCmd cmd.Cmd) {
 		getAppInfo(ctx)
 		// 获取注册中心信息
 		getRegistryFromConf(ctx)
+		//初始化日志
+		InitLog()
+
 		// 还调用原函数
 		if cmdBefore != nil {
 			return cmdBefore(ctx)
@@ -120,8 +123,7 @@ func InitCmd(updateCmd cmd.Cmd) {
 	// 获取原来的 After 函数
 	cmdAfter := cmd.App().After
 	cmd.App().After = func(ctx *cli.Context) error {
-		// 插入日志初始化
-		InitLog()
+		// 插入自定义的部分
 		// 还调用原函数
 		if cmdAfter != nil {
 			return cmdAfter(ctx)
