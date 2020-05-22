@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	appName = ""
-	appEnv  = ""
+	appName  = ""
+	appEnv   = ""
+	logLevel = zapcore.DebugLevel
 )
 
 type RegistryConf struct {
@@ -21,8 +22,15 @@ type RegistryConf struct {
 	Address string
 }
 
-type LogConf struct {
-	Level string
+func GetLogLevel() zapcore.Level {
+	return logLevel
+}
+
+func SetLogLevel(levelStr string) {
+	err := logLevel.UnmarshalText([]byte(levelStr))
+	if err != nil {
+		panic(err)
+	}
 }
 
 func GetAppName() string {
@@ -49,17 +57,12 @@ func SetEnv(env string) {
 
 func InitApp(myCmd cmd.Cmd, level zapcore.Level) {
 	InitConf()
-	InitLog(level)
 	InitCmd(myCmd)
+	InitLog()
 }
 
-func InitLog(level zapcore.Level) {
-	logConf := LogConf{}
-	err := config.Get(GetEnv(), GetAppName(), "log").Scan(&logConf)
-	if err != nil {
-		panic(err)
-	}
-	log.InitLogWithPath("logs/"+GetEnv(), GetAppName(), level)
+func InitLog() {
+	log.InitLogWithPath("logs/"+GetEnv(), GetAppName(), GetLogLevel())
 }
 
 func InitConf() {
@@ -94,26 +97,46 @@ func InitCmd(updateCmd cmd.Cmd) {
 			Usage:  "set app run environment",
 			EnvVar: "ENV",
 		},
+		cli.StringFlag{
+			Name:   "log_level",
+			Usage:  "log level",
+			EnvVar: "LOG_LEVEL",
+		},
 	)
 	// 替换从命令行输入参数的方式创建 registry
 	cmdBefore := cmd.App().Before
 	cmd.App().Before = func(ctx *cli.Context) error {
-		registry := RegistryConf{}
+		var err error
+		// 命令行中获取基本信息
+		env := ctx.String("env")
+		if env == "" {
+			panic("env is empty")
+		}
+		SetEnv(env)
+		fmt.Println("env:", env)
+
+		appName := ctx.String("app_name")
+		if appName == "" {
+			panic("appName is empty")
+		}
+		SetAppName(appName)
+		fmt.Println("app_name:", appName)
+
+		levelStr := ctx.String("log_level")
+		if levelStr == "" {
+			panic("levelStr is empty")
+		}
+		SetLogLevel(levelStr)
+		fmt.Println("log_level:", levelStr)
+
 		// 从配置中心获取注册中心信息
-		err := config.Get(GetEnv(), GetAppName(), "registry").Scan(&registry)
+		registry := RegistryConf{}
+		err = config.Get(GetEnv(), GetAppName(), "registry").Scan(&registry)
 		err = ctx.Set("registry", registry.Type)
 		err = ctx.Set("registry_address", registry.Address)
 		if err != nil {
 			panic(err)
 		}
-		env := ctx.String("env")
-		fmt.Println("env:", env)
-		SetEnv(env)
-
-		appName := ctx.String("app_name")
-		fmt.Println("app_name:", appName)
-		SetAppName(appName)
-
 		// 还调用原函数
 		return cmdBefore(ctx)
 	}
