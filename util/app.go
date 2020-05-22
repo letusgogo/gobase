@@ -2,11 +2,13 @@ package util
 
 import (
 	"fmt"
+	"github.com/iothink/gobase/log"
 	"github.com/micro/cli"
 	"github.com/micro/go-micro/config"
 	"github.com/micro/go-micro/config/cmd"
 	consulConfig "github.com/micro/go-plugins/config/source/consul"
 	consultRegistry "github.com/micro/go-plugins/registry/consul"
+	"go.uber.org/zap/zapcore"
 )
 
 var (
@@ -14,9 +16,13 @@ var (
 	appEnv  = ""
 )
 
-type Registry struct {
+type RegistryConf struct {
 	Type    string
 	Address string
+}
+
+type LogConf struct {
+	Level string
 }
 
 func GetAppName() string {
@@ -41,9 +47,19 @@ func SetEnv(env string) {
 	appEnv = env
 }
 
-func InitApp(myCmd cmd.Cmd) {
+func InitApp(myCmd cmd.Cmd, level zapcore.Level) {
 	InitConf()
+	InitLog(level)
 	InitCmd(myCmd)
+}
+
+func InitLog(level zapcore.Level) {
+	logConf := LogConf{}
+	err := config.Get(GetEnv(), GetAppName(), "log").Scan(&logConf)
+	if err != nil {
+		panic(err)
+	}
+	log.InitLogWithPath("logs/"+GetEnv(), GetAppName(), level)
 }
 
 func InitConf() {
@@ -82,7 +98,7 @@ func InitCmd(updateCmd cmd.Cmd) {
 	// 替换从命令行输入参数的方式创建 registry
 	cmdBefore := cmd.App().Before
 	cmd.App().Before = func(ctx *cli.Context) error {
-		registry := Registry{}
+		registry := RegistryConf{}
 		// 从配置中心获取注册中心信息
 		err := config.Get(GetEnv(), GetAppName(), "registry").Scan(&registry)
 		err = ctx.Set("registry", registry.Type)
