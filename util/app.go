@@ -55,7 +55,7 @@ func SetEnv(env string) {
 	appEnv = env
 }
 
-func InitApp(myCmd cmd.Cmd, level zapcore.Level) {
+func InitApp(myCmd cmd.Cmd) {
 	InitConf()
 	InitCmd(myCmd)
 }
