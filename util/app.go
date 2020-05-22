@@ -112,7 +112,6 @@ func InitCmd(updateCmd cmd.Cmd) {
 		getRegistryFromConf(ctx)
 		//初始化日志
 		InitLog()
-
 		// 还调用原函数
 		if cmdBefore != nil {
 			return cmdBefore(ctx)
