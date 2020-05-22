@@ -103,14 +103,47 @@ func InitCmd(updateCmd cmd.Cmd) {
 		},
 	)
 
-	cmd.App().Before = Before
-	cmd.App().After = After
+	// 获取原来的 getRegistryFromConf 函数
+	cmdBefore := cmd.App().Before
+	cmd.App().Before = func(ctx *cli.Context) error {
+		// 获取命令行中应用的基本参数
+		getAppInfo(ctx)
+		// 获取注册中心信息
+		getRegistryFromConf(ctx)
+		// 还调用原函数
+		if cmdBefore != nil {
+			return cmdBefore(ctx)
+		} else {
+			return nil
+		}
+	}
+	// 获取原来的 After 函数
+	cmdAfter := cmd.App().After
+	cmd.App().After = func(ctx *cli.Context) error {
+		// 插入日志初始化
+		InitLog()
+		// 还调用原函数
+		if cmdAfter != nil {
+			return cmdAfter(ctx)
+		} else {
+			return nil
+		}
+	}
 }
 
-func Before(ctx *cli.Context) error {
-	// 获取原来的 Before 函数
-	cmdBefore := cmd.App().Before
+func getRegistryFromConf(ctx *cli.Context) {
 	var err error
+	//替换从命令行输入参数的方式,从配置中心获取注册中心信息
+	registry := RegistryConf{}
+	err = config.Get(GetEnv(), GetAppName(), "registry").Scan(&registry)
+	err = ctx.Set("registry", registry.Type)
+	err = ctx.Set("registry_address", registry.Address)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func getAppInfo(ctx *cli.Context) {
 	// 命令行中获取基本信息
 	env := ctx.String("env")
 	if env == "" {
@@ -132,32 +165,4 @@ func Before(ctx *cli.Context) error {
 	}
 	SetLogLevel(levelStr)
 	fmt.Println("log_level:", levelStr)
-
-	//替换从命令行输入参数的方式,从配置中心获取注册中心信息
-	registry := RegistryConf{}
-	err = config.Get(GetEnv(), GetAppName(), "registry").Scan(&registry)
-	err = ctx.Set("registry", registry.Type)
-	err = ctx.Set("registry_address", registry.Address)
-	if err != nil {
-		panic(err)
-	}
-	// 还调用原函数
-	if cmdBefore != nil {
-		return cmdBefore(ctx)
-	} else {
-		return nil
-	}
-}
-
-func After(ctx *cli.Context) error {
-	// 获取原来的 After 函数
-	cmdAfter := cmd.App().After
-	// 插入日志初始化
-	InitLog()
-	// 还调用原函数
-	if cmdAfter != nil {
-		return cmdAfter(ctx)
-	} else {
-		return nil
-	}
 }
