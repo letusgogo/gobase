@@ -135,11 +135,21 @@ func InitCmd(updateCmd cmd.Cmd) {
 
 func getRegistryFromConf(ctx *cli.Context) {
 	var err error
-	//替换从命令行输入参数的方式,从配置中心获取注册中心信息
+	//从配置中心获取注册中心信息
 	registry := RegistryConf{}
 	err = config.Get(GetEnv(), GetAppName(), "registry").Scan(&registry)
-	err = ctx.Set("registry", registry.Type)
-	err = ctx.Set("registry_address", registry.Address)
+	if err != nil {
+		panic(err)
+	}
+	// 如果命令行指定了则使用命令行指定的否则使用配置中心的
+	regTypeCmd := ctx.String("registry")
+	if regTypeCmd == "" {
+		err = ctx.Set("registry", registry.Type)
+	}
+	regAddrCmd := ctx.String("registry_address")
+	if regAddrCmd == "" {
+		err = ctx.Set("registry_address", registry.Address)
+	}
 	if err != nil {
 		panic(err)
 	}
