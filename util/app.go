@@ -58,7 +58,6 @@ func SetEnv(env string) {
 func InitApp(myCmd cmd.Cmd, level zapcore.Level) {
 	InitConf()
 	InitCmd(myCmd)
-	InitLog()
 }
 
 func InitLog() {
@@ -103,41 +102,62 @@ func InitCmd(updateCmd cmd.Cmd) {
 			EnvVar: "LOG_LEVEL",
 		},
 	)
-	// 替换从命令行输入参数的方式创建 registry
+
+	cmd.App().Before = Before
+	cmd.App().After = After
+}
+
+func Before(ctx *cli.Context) error {
+	// 获取原来的 Before 函数
 	cmdBefore := cmd.App().Before
-	cmd.App().Before = func(ctx *cli.Context) error {
-		var err error
-		// 命令行中获取基本信息
-		env := ctx.String("env")
-		if env == "" {
-			panic("env is empty")
-		}
-		SetEnv(env)
-		fmt.Println("env:", env)
+	var err error
+	// 命令行中获取基本信息
+	env := ctx.String("env")
+	if env == "" {
+		panic("env is empty")
+	}
+	SetEnv(env)
+	fmt.Println("env:", env)
 
-		appName := ctx.String("app_name")
-		if appName == "" {
-			panic("appName is empty")
-		}
-		SetAppName(appName)
-		fmt.Println("app_name:", appName)
+	appName := ctx.String("app_name")
+	if appName == "" {
+		panic("appName is empty")
+	}
+	SetAppName(appName)
+	fmt.Println("app_name:", appName)
 
-		levelStr := ctx.String("log_level")
-		if levelStr == "" {
-			panic("levelStr is empty")
-		}
-		SetLogLevel(levelStr)
-		fmt.Println("log_level:", levelStr)
+	levelStr := ctx.String("log_level")
+	if levelStr == "" {
+		panic("log_level is empty")
+	}
+	SetLogLevel(levelStr)
+	fmt.Println("log_level:", levelStr)
 
-		// 从配置中心获取注册中心信息
-		registry := RegistryConf{}
-		err = config.Get(GetEnv(), GetAppName(), "registry").Scan(&registry)
-		err = ctx.Set("registry", registry.Type)
-		err = ctx.Set("registry_address", registry.Address)
-		if err != nil {
-			panic(err)
-		}
-		// 还调用原函数
+	//替换从命令行输入参数的方式,从配置中心获取注册中心信息
+	registry := RegistryConf{}
+	err = config.Get(GetEnv(), GetAppName(), "registry").Scan(&registry)
+	err = ctx.Set("registry", registry.Type)
+	err = ctx.Set("registry_address", registry.Address)
+	if err != nil {
+		panic(err)
+	}
+	// 还调用原函数
+	if cmdBefore != nil {
 		return cmdBefore(ctx)
+	} else {
+		return nil
+	}
+}
+
+func After(ctx *cli.Context) error {
+	// 获取原来的 After 函数
+	cmdAfter := cmd.App().After
+	// 插入日志初始化
+	InitLog()
+	// 还调用原函数
+	if cmdAfter != nil {
+		return cmdAfter(ctx)
+	} else {
+		return nil
 	}
 }
