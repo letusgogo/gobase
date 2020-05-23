@@ -35,7 +35,7 @@ func SetLogLevel(levelStr string) {
 
 func GetAppName() string {
 	if appName == "" {
-		panic("appName is empty")
+		panic("--app_name is empty")
 	}
 	return appName
 }
@@ -46,7 +46,7 @@ func SetAppName(name string) {
 
 func GetEnv() string {
 	if appEnv == "" {
-		panic("appEnv is empty")
+		panic("--env is empty")
 	}
 	return appEnv
 }
