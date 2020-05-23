@@ -61,7 +61,7 @@ func InitApp(myCmd cmd.Cmd) {
 }
 
 func InitLog() {
-	log.InitLogWithPath("logs/"+GetEnv(), GetAppName(), GetLogLevel())
+	log.InitLogWithPath("logs/"+GetEnv()+"/", GetAppName(), GetLogLevel())
 }
 
 func InitConf() {
