@@ -19,8 +19,10 @@ type ErrInfo struct {
 }
 
 // 从定义好的 ErrInfo 构造错误对象。可以替换掉里面的 Msg
-// NewErrInfo(ErrDataBase).Msg = "redis error"
-func NewErrInfo(err *ErrInfo) *ErrInfo {
+// errInfo := CopyErrInfo(ErrDataBase)
+// errInfo.Msg = "redis error"
+
+func CopyErrInfo(err *ErrInfo) *ErrInfo {
 	return &ErrInfo{Ret: err.Ret, Msg: err.Msg, Error: err.Error}
 }
 
