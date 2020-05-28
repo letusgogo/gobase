@@ -18,6 +18,12 @@ type ErrInfo struct {
 	Error error  // 保存内部错误信息
 }
 
+// 从定义好的 ErrInfo 构造错误对象。可以替换掉里面的 Msg
+// NewErrInfo(ErrDataBase).Msg = "redis error"
+func NewErrInfo(err *ErrInfo) *ErrInfo {
+	return &ErrInfo{Ret: err.Ret, Msg: err.Msg, Error: err.Error}
+}
+
 func (e *ErrInfo) GetRet() int32 {
 	return e.Ret
 }
