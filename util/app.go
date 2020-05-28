@@ -2,7 +2,7 @@ package util
 
 import (
 	"fmt"
-	"github.com/iothink/gobase/log"
+	"git.iothinking.com/base/gobase/log"
 	"github.com/micro/cli"
 	"github.com/micro/go-micro/config"
 	"github.com/micro/go-micro/config/cmd"

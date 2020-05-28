@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/iothink/gobase/log"
-	"github.com/iothink/gobase/util"
+	"git.iothinking.com/base/gobase/log"
+	"git.iothinking.com/base/gobase/util"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )

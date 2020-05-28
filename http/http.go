@@ -3,7 +3,7 @@ package http
 import (
 	"context"
 	"fmt"
-	"github.com/iothink/gobase/log"
+	"git.iothinking.com/base/gobase/log"
 	"go.uber.org/zap"
 	"net/http"
 	"os"

@@ -1,4 +1,4 @@
-module github.com/iothink/gobase
+module git.iothinking.com/base/gobase
 
 require (
 	github.com/micro/cli v0.2.0
