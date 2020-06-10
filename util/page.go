@@ -11,6 +11,10 @@ type DefaultPage struct {
 	pageSize int64
 }
 
+func NewDefaultPage(pageNo int64, pageSize int64) *DefaultPage {
+	return &DefaultPage{pageNo: pageNo, pageSize: pageSize}
+}
+
 func (p *DefaultPage) GetOffset() int64 {
 	return (p.pageNo - 1) * p.pageSize
 }
