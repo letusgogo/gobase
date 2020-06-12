@@ -18,13 +18,6 @@ type ErrInfo struct {
 	Error error  // 保存内部错误信息
 }
 
-// 从定义好的 ErrInfo 构造错误对象。可以替换掉里面的 Msg
-// errInfo := CopyErrInfo(ErrDataBase)
-// errInfo.Msg = "redis error"
-func CopyErrInfo(err *ErrInfo) *ErrInfo {
-	return &ErrInfo{Ret: err.Ret, Msg: err.Msg, Error: err.Error}
-}
-
 func (e *ErrInfo) GetRet() int32 {
 	return e.Ret
 }
@@ -42,11 +35,26 @@ var (
 	ErrDataBase = &ErrInfo{3, "database error", nil}
 )
 
-func WriteRpcRsp(rspPtr interface{}, err RpcError, datas map[string]interface{}) {
-	if nil == datas {
-		datas = make(map[string]interface{})
+func WriteRpcRsp(rspPtr interface{}, rpcError RpcError, data map[string]interface{}) {
+	if nil == data {
+		data = make(map[string]interface{})
 	}
-	datas["Ret"] = err.GetRet()
-	datas["Msg"] = err.GetMsg()
-	SetStructVals(rspPtr, datas)
+	if rpcError == nil {
+		panic("rpcError is nil")
+	}
+	data["Ret"] = rpcError.GetRet()
+	data["Msg"] = rpcError.GetMsg()
+	SetStructVals(rspPtr, data)
+}
+
+func WriteRpcRspWithMsg(rspPtr interface{}, rpcError RpcError, msg string, data map[string]interface{}) {
+	if nil == data {
+		data = make(map[string]interface{})
+	}
+	if rpcError == nil {
+		panic("rpcError is nil")
+	}
+	data["Ret"] = rpcError.GetRet()
+	data["Msg"] = msg
+	SetStructVals(rspPtr, data)
 }
