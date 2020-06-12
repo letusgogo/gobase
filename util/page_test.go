@@ -46,6 +46,15 @@ func TestPageSlice1(t *testing.T) {
 			want:    []int{5, 6, 7, 8, 9},
 			wantErr: false,
 		},
+		{
+			name: "test(1,5)Slice",
+			args: args{
+				slice:    slice,
+				pageable: NewGormPage(1, 5),
+			},
+			want:    []int{0, 1, 2, 3, 4},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
