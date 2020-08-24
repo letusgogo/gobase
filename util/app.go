@@ -6,6 +6,7 @@ import (
 	"github.com/micro/cli"
 	"github.com/micro/go-micro/config"
 	"github.com/micro/go-micro/config/cmd"
+	"github.com/micro/go-plugins/broker/nsq"
 	consulConfig "github.com/micro/go-plugins/config/source/consul"
 	consultRegistry "github.com/micro/go-plugins/registry/consul"
 	"go.uber.org/zap/zapcore"
@@ -18,6 +19,11 @@ var (
 )
 
 type RegistryConf struct {
+	Type    string
+	Address string
+}
+
+type BrokerConf struct {
 	Type    string
 	Address string
 }
@@ -84,6 +90,8 @@ func InitConf() {
 func InitCmd(updateCmd cmd.Cmd) {
 	// 默认注册中心添加 consul 作为注册中心
 	cmd.DefaultRegistries["consul"] = consultRegistry.NewRegistry
+	// 默认的 nsq 作为 broker
+	cmd.DefaultBrokers["nsq"] = nsq.NewBroker
 	// 增加命令行
 	updateCmd.App().Flags = append(cmd.DefaultFlags,
 		cli.StringFlag{
@@ -140,14 +148,35 @@ func getRegistryFromConf(ctx *cli.Context) {
 	if err != nil {
 		panic(err)
 	}
-	// 如果命令行指定了则使用命令行指定的否则使用配置中心的
+	// 如果命令行指定了则使用命令行指定的否则使用配置中心的 注册中心
 	regTypeCmd := ctx.String("registry")
 	if regTypeCmd == "" {
+		// 设置命令行参数为配置中心的
 		err = ctx.Set("registry", registry.Type)
 	}
 	regAddrCmd := ctx.String("registry_address")
 	if regAddrCmd == "" {
+		// 设置命令行参数为配置中心的
 		err = ctx.Set("registry_address", registry.Address)
+	}
+	if err != nil {
+		panic(err)
+	}
+
+	// 如果命令行指定了则使用命令行指定的否则使用配置中心的 broker
+	err = config.Get(GetEnv(), GetAppName(), "broker").Scan(&registry)
+	if err != nil {
+		panic(err)
+	}
+	brokerTypeCmd := ctx.String("broker")
+	if brokerTypeCmd == "" {
+		// 设置命令行参数为配置中心的
+		err = ctx.Set("broker", registry.Type)
+	}
+	brokerAddress := ctx.String("broker_address")
+	if brokerAddress == "" {
+		// 设置命令行参数为配置中心的
+		err = ctx.Set("broker_address", registry.Type)
 	}
 	if err != nil {
 		panic(err)
