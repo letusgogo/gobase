@@ -142,45 +142,42 @@ func InitCmd(updateCmd cmd.Cmd) {
 
 func getRegistryFromConf(ctx *cli.Context) {
 	var err error
-	//从配置中心获取注册中心信息
-	registry := RegistryConf{}
-	err = config.Get(GetEnv(), GetAppName(), "registry").Scan(&registry)
-	if err != nil {
-		panic(err)
-	}
+
 	// 如果命令行指定了则使用命令行指定的否则使用配置中心的 注册中心
 	regTypeCmd := ctx.String("registry")
-	if regTypeCmd == "" {
-		// 设置命令行参数为配置中心的
-		err = ctx.Set("registry", registry.Type)
-	}
 	regAddrCmd := ctx.String("registry_address")
-	if regAddrCmd == "" {
-		// 设置命令行参数为配置中心的
-		err = ctx.Set("registry_address", registry.Address)
-	}
-	if err != nil {
-		panic(err)
+	if regTypeCmd != "" {
+		_ = ctx.Set("registry", regTypeCmd)
+		_ = ctx.Set("registry_address", regAddrCmd)
+	} else {
+		//从配置中心获取注册中心信息
+		registryConf := RegistryConf{}
+		err = config.Get(GetEnv(), GetAppName(), "registry").Scan(&registryConf)
+		if err != nil {
+			panic(err)
+		}
+		_ = ctx.Set("registry", registryConf.Type)
+		_ = ctx.Set("registry_address", registryConf.Address)
 	}
 
 	// 如果命令行指定了则使用命令行指定的否则使用配置中心的 broker
-	err = config.Get(GetEnv(), GetAppName(), "broker").Scan(&registry)
-	if err != nil {
-		panic(err)
-	}
 	brokerTypeCmd := ctx.String("broker")
-	if brokerTypeCmd == "" {
-		// 设置命令行参数为配置中心的
-		err = ctx.Set("broker", registry.Type)
+	brokerAddressCmd := ctx.String("broker_address")
+	if brokerTypeCmd != "" {
+		_ = ctx.Set("broker", brokerTypeCmd)
+		_ = ctx.Set("broker_address", brokerAddressCmd)
+	} else {
+		brokerConf := BrokerConf{}
+		err = config.Get(GetEnv(), GetAppName(), "broker").Scan(&brokerConf)
+		if err != nil {
+			panic(err)
+		}
+		if brokerConf.Type != "" {
+			_ = ctx.Set("broker", brokerConf.Type)
+			_ = ctx.Set("broker_address", brokerConf.Address)
+		}
 	}
-	brokerAddress := ctx.String("broker_address")
-	if brokerAddress == "" {
-		// 设置命令行参数为配置中心的
-		err = ctx.Set("broker_address", registry.Type)
-	}
-	if err != nil {
-		panic(err)
-	}
+
 }
 
 func getAppInfo(ctx *cli.Context) {
