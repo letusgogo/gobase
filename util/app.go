@@ -74,7 +74,7 @@ func InitConf() {
 	// 1. 加载配置文件
 	consulSource := consulConfig.NewSource(
 		// optionally specify consul address; default to localhost:8500
-		consulConfig.WithAddress("m.consul.com:8500"),
+		consulConfig.WithAddress("consul.middleware.com:8500"),
 		// optionally specify prefix; defaults to /micro/config
 		consulConfig.WithPrefix("config/"),
 		// optionally strip the provided prefix from the keys, defaults to false
