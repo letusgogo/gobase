@@ -225,6 +225,9 @@ func GetStringWithDefault(val interface{}, defaultVal string) string {
 }
 
 func GetString(val interface{}) (string, error) {
+	if val == nil {
+		return "", errors.New("nil pointer")
+	}
 	switch val.(type) {
 	case string:
 		return val.(string), nil
