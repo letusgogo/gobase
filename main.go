@@ -1,10 +1,8 @@
 package main
 
 import (
-	"git.iothinking.com/base/gobase/log"
+	"fmt"
 	"git.iothinking.com/base/gobase/util"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 // 创建一个 user 请求
@@ -21,14 +19,25 @@ type CreateUserReq struct {
 
 var ErrUserDuplicate = &util.ErrInfo{Ret: 100, Msg: "Duplicate user"}
 
-func main() {
-	req := &CreateUserReq{
-		Name:     "于海洋",
-		Telphone: "18989893637",
-		Pass:     "123456",
-		Pid:      10,
-		Code:     "12312",
+func test(val interface{}) {
+	valInt, ok := val.(int64)
+	if !ok {
+		fmt.Printf("%v", ok)
+	} else {
+		fmt.Printf("%v", valInt)
 	}
-	log.InitLog("test", zapcore.DebugLevel)
-	log.Info("test", zap.Any("req", req), zap.Any("errr", ErrUserDuplicate))
+}
+
+func main() {
+	//req := &CreateUserReq{
+	//	Name:     "于海洋",
+	//	Telphone: "18989893637",
+	//	Pass:     "123456",
+	//	Pid:      10,
+	//	Code:     "12312",
+	//}
+	//log.InitLog("test", zapcore.DebugLevel)
+	//log.Info("test", zap.Any("req", req), zap.Any("errr", ErrUserDuplicate))
+	a := uint(8)
+	test(a)
 }
