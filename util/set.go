@@ -44,8 +44,8 @@ type TraverseFunc func(x interface{})
 
 //遍历set
 func (s *Set) Traverse(x TraverseFunc) {
-	for v := range s.m {
-		x(v)
+	for k, _ := range s.m {
+		x(k)
 	}
 }
 
