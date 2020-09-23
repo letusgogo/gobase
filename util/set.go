@@ -1,9 +1,5 @@
 package util
 
-import (
-	"fmt"
-)
-
 type Empty struct{}
 
 var empty Empty
@@ -44,10 +40,12 @@ func (s *Set) Clear() {
 	s.m = make(map[interface{}]Empty)
 }
 
+type TraverseFunc func(x interface{})
+
 //遍历set
-func (s *Set) Traverse() {
+func (s *Set) Traverse(x TraverseFunc) {
 	for v := range s.m {
-		fmt.Println(v)
+		x(v)
 	}
 }
 
