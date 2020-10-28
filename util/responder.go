@@ -35,6 +35,7 @@ var (
 	ErrParam    = &ErrInfo{2, "param error", nil}
 	ErrDataBase = &ErrInfo{3, "database error", nil}
 	ErrToken    = &ErrInfo{4, "token error", nil}
+	ErrRpc      = &ErrInfo{5, "rpc call error", nil}
 )
 
 // 从 info 创建一个新的 ErrInfo 类型的对象。
