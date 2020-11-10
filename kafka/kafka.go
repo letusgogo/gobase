@@ -193,6 +193,8 @@ func (k *Broker) Connect() error {
 	k.scMutex.Lock()
 	defer k.scMutex.Unlock()
 	k.sc = make([]sarama.Client, 0)
+
+	log.Info("kafka connect successful")
 	return nil
 }
 
@@ -253,6 +255,7 @@ func (k *Broker) Subscribe(topic string, handler SubscriberHandler, opts ...Subs
 				// 查看是是主动退出的
 				err = k.opts.Context.Err()
 				if err != nil {
+					log.Info("kafka subscribe exit", zap.String("topic", topic))
 					return
 				}
 				if err == sarama.ErrClosedConsumerGroup {

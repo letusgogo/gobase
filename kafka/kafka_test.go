@@ -9,7 +9,7 @@ import (
 )
 
 func TestBroker_Subscribe(t *testing.T) {
-	log.InitLog("httpserver", zapcore.DebugLevel)
+	log.InitLog("kafka", zapcore.DebugLevel)
 
 	kafkaBroker := NewBroker()
 	_ = kafkaBroker.Init(Addrs("kafka1.middleware.com:9092"))
@@ -31,7 +31,7 @@ func TestBroker_Subscribe(t *testing.T) {
 
 	_ = kafkaBroker.Disconnect()
 
-	time.Sleep(time.Second * 10)
+	time.Sleep(time.Second * 2)
 
 	fmt.Println("kafka exit ok")
 }
