@@ -22,6 +22,7 @@ type RecvMsg struct {
 	Offset         int64
 }
 
+// 返回 true 则 commit offset 到 kafka 否则,消息不会被消费
 type SubscriberHandler func(msg *RecvMsg) bool
 
 type Broker struct {
