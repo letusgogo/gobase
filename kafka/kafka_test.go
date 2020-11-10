@@ -15,8 +15,9 @@ func TestBroker_Subscribe(t *testing.T) {
 	_ = kafkaBroker.Init(Addrs("kafka1.middleware.com:9092"))
 	_ = kafkaBroker.Connect()
 
-	err := kafkaBroker.Subscribe("test", func(msg *RecvMsg) {
+	err := kafkaBroker.Subscribe("test", func(msg *RecvMsg) bool {
 		fmt.Println("Msg:" + string(msg.Msg))
+		return true
 	}, Queue("go.micro.api.bigdata"))
 	if err != nil {
 		t.Fatal("subscribe error", err.Error())

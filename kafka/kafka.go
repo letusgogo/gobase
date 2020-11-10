@@ -22,7 +22,7 @@ type RecvMsg struct {
 	Offset         int64
 }
 
-type SubscriberHandler func(msg *RecvMsg)
+type SubscriberHandler func(msg *RecvMsg) bool
 
 type Broker struct {
 	addrs []string
@@ -139,8 +139,14 @@ func (c *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim saram
 			Partition:      message.Partition,
 			Offset:         message.Offset,
 		}
-		c.handler(msg)
-		session.MarkMessage(message, "")
+		commit := c.handler(msg)
+
+		// 是否提交
+		if commit {
+			session.MarkMessage(message, "")
+		} else {
+			log.Warn("subscribe handler return not commit, offset not commit")
+		}
 	}
 
 	return nil
