@@ -256,17 +256,20 @@ func (k *Broker) Subscribe(topic string, handler SubscriberHandler, opts ...Subs
 			default:
 				err := cg.Consume(k.opts.Context, topics, consumer)
 				if err != nil {
-					log.Error("consumer error", zap.Error(err))
+					if err == sarama.ErrClosedConsumerGroup {
+						log.Info("kafka subscribe graceful exit", zap.String("topic", topic))
+						return
+					} else {
+						log.Error("consumer error", zap.Error(err))
+					}
 				}
 				// 查看是是主动退出的
 				err = k.opts.Context.Err()
 				if err != nil {
-					log.Info("kafka subscribe exit", zap.String("topic", topic))
+					log.Info("kafka subscribe graceful exit", zap.String("topic", topic))
 					return
 				}
-				if err == sarama.ErrClosedConsumerGroup {
-					return
-				}
+
 			}
 		}
 	}()
