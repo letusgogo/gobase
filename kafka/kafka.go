@@ -37,6 +37,7 @@ type Broker struct {
 
 	opts   Options
 	cancel context.CancelFunc
+	wg     sync.WaitGroup
 }
 
 func NewBroker(opts ...Option) *Broker {
@@ -65,6 +66,7 @@ func NewBroker(opts ...Option) *Broker {
 		addrs:  cAddrs,
 		opts:   options,
 		cancel: cancelFunc,
+		wg:     sync.WaitGroup{},
 	}
 }
 
@@ -214,7 +216,10 @@ func (k *Broker) Disconnect() error {
 	}
 	k.sc = nil
 	_ = k.p.Close()
-	return k.c.Close()
+	_ = k.c.Close()
+	k.wg.Wait()
+
+	return nil
 }
 
 func (k *Broker) Publish(topic string, msg []byte, opts ...PublishOption) error {
@@ -246,7 +251,10 @@ func (k *Broker) Subscribe(topic string, handler SubscriberHandler, opts ...Subs
 	consumer := NewConsumer(handler)
 
 	topics := []string{topic}
+
+	k.wg.Add(1)
 	go func() {
+		defer k.wg.Done()
 		for {
 			select {
 			case err := <-cg.Errors():

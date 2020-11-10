@@ -18,7 +18,15 @@ func TestBroker_Subscribe(t *testing.T) {
 	err := kafkaBroker.Subscribe("test", func(msg *RecvMsg) bool {
 		fmt.Println("Msg:" + string(msg.Msg))
 		return true
-	}, Queue("go.micro.api.bigdata"))
+	}, Queue("test"))
+	if err != nil {
+		t.Fatal("subscribe error", err.Error())
+	}
+
+	err = kafkaBroker.Subscribe("test2", func(msg *RecvMsg) bool {
+		fmt.Println("Msg:" + string(msg.Msg))
+		return true
+	}, Queue("test"))
 	if err != nil {
 		t.Fatal("subscribe error", err.Error())
 	}
@@ -31,8 +39,5 @@ func TestBroker_Subscribe(t *testing.T) {
 	time.Sleep(time.Second * 5)
 
 	_ = kafkaBroker.Disconnect()
-
-	time.Sleep(time.Second * 2)
-
 	fmt.Println("kafka exit ok")
 }
