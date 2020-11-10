@@ -5,6 +5,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"time"
 )
 
 var log *zap.Logger
@@ -22,7 +23,9 @@ func InitLogWithPath(path, appName string, level zapcore.Level) {
 	w := zapcore.AddSync(jLoger)
 
 	config := zap.NewProductionEncoderConfig()
-	config.EncodeTime = zapcore.ISO8601TimeEncoder
+	config.EncodeTime = func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+		enc.AppendString(t.Format("2006-01-02 15:04:05"))
+	}
 	core := zapcore.NewCore(
 		zapcore.NewConsoleEncoder(config),
 		w,
