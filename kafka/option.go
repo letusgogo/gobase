@@ -3,6 +3,7 @@ package kafka
 import (
 	"context"
 	"crypto/tls"
+	"time"
 )
 
 type Options struct {
@@ -24,6 +25,9 @@ type SubscribeOptions struct {
 	// AutoAck defaults to true. When a handler returns
 	// with a nil error the message is acked.
 	AutoAck bool
+
+	// default 5s
+	AutoAckTime time.Duration
 	// Subscribers with the same queue name
 	// will create a shared subscription where each
 	// receives a subset of messages.
@@ -42,7 +46,8 @@ type SubscribeOption func(*SubscribeOptions)
 
 func NewSubscribeOptions(opts ...SubscribeOption) SubscribeOptions {
 	opt := SubscribeOptions{
-		AutoAck: true,
+		AutoAck:     true,
+		AutoAckTime: 5 * time.Second,
 	}
 
 	for _, o := range opts {

@@ -71,8 +71,8 @@ func NewBroker(opts ...Option) *Broker {
 	}
 }
 
-func (k *Broker) getSaramaClusterClient(topic string) (sarama.Client, error) {
-	config := k.getClusterConfig()
+func (k *Broker) getSaramaClusterClient(opt SubscribeOptions) (sarama.Client, error) {
+	config := k.getClusterConfig(opt)
 	cs, err := sarama.NewClient(k.addrs, config)
 	if err != nil {
 		return nil, err
@@ -83,7 +83,7 @@ func (k *Broker) getSaramaClusterClient(topic string) (sarama.Client, error) {
 	return cs, nil
 }
 
-func (k *Broker) getClusterConfig() *sarama.Config {
+func (k *Broker) getClusterConfig(opt SubscribeOptions) *sarama.Config {
 	if c, ok := k.opts.Context.Value(clusterConfigKey{}).(*sarama.Config); ok {
 		return c
 	}
@@ -96,6 +96,11 @@ func (k *Broker) getClusterConfig() *sarama.Config {
 	}
 	clusterConfig.Consumer.Return.Errors = true
 	clusterConfig.Consumer.Offsets.Initial = sarama.OffsetNewest
+	clusterConfig.Consumer.Offsets.AutoCommit.Enable = opt.AutoAck
+	if !opt.AutoAck {
+		clusterConfig.Consumer.Offsets.AutoCommit.Interval = opt.AutoAckTime
+	}
+
 	return clusterConfig
 }
 
@@ -233,14 +238,15 @@ func (k *Broker) Publish(topic string, msg []byte, opts ...PublishOption) error 
 
 func (k *Broker) Subscribe(topic string, handler SubscriberHandler, opts ...SubscribeOption) error {
 	opt := SubscribeOptions{
-		AutoAck: true,
-		Queue:   uuid.New().String(),
+		AutoAck:     true,
+		AutoAckTime: 5 * time.Second,
+		Queue:       uuid.New().String(),
 	}
 	for _, o := range opts {
 		o(&opt)
 	}
 	// we need to create a new client per consumer
-	c, err := k.getSaramaClusterClient(topic)
+	c, err := k.getSaramaClusterClient(opt)
 	if err != nil {
 		return err
 	}
@@ -255,7 +261,9 @@ func (k *Broker) Subscribe(topic string, handler SubscriberHandler, opts ...Subs
 
 	k.wg.Add(1)
 	go func() {
-		defer k.wg.Done()
+		defer func() {
+			k.wg.Done()
+		}()
 		for {
 			select {
 			case err := <-cg.Errors():
