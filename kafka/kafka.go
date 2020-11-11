@@ -97,7 +97,7 @@ func (k *Broker) getClusterConfig(opt SubscribeOptions) *sarama.Config {
 	clusterConfig.Consumer.Return.Errors = true
 	clusterConfig.Consumer.Offsets.Initial = sarama.OffsetNewest
 	clusterConfig.Consumer.Offsets.AutoCommit.Enable = opt.AutoAck
-	if !opt.AutoAck {
+	if opt.AutoAck {
 		clusterConfig.Consumer.Offsets.AutoCommit.Interval = opt.AutoAckTime
 	}
 
