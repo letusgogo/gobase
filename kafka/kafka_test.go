@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"git.iothinking.com/base/gobase/log"
 	"go.uber.org/zap/zapcore"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -11,14 +12,17 @@ import (
 func TestBroker_Subscribe(t *testing.T) {
 	log.InitLog("kafka", zapcore.DebugLevel)
 
+	consumerMsg := int32(0)
+
 	kafkaBroker := NewBroker()
 	_ = kafkaBroker.Init(Addrs("kafka1.middleware.com:9092"))
 	_ = kafkaBroker.Connect()
 
 	err := kafkaBroker.Subscribe("baldr.baldr110.student", func(msg *RecvMsg) bool {
-		fmt.Println("Msg:" + string(msg.Msg))
-		time.Sleep(50 * time.Millisecond)
-		return false
+		fmt.Printf("Offset:%d\n", msg.Offset)
+		//time.Sleep(50 * time.Millisecond)
+		atomic.AddInt32(&consumerMsg, 1)
+		return true
 	}, Queue("go.micro.api.bigdata"))
 	if err != nil {
 		t.Fatal("subscribe error", err.Error())
@@ -40,5 +44,5 @@ func TestBroker_Subscribe(t *testing.T) {
 	time.Sleep(time.Second * 5)
 
 	_ = kafkaBroker.Disconnect()
-	fmt.Println("kafka exit ok")
+	fmt.Printf("kafka consumerMsg:%d\n", consumerMsg)
 }

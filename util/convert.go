@@ -6,6 +6,50 @@ import (
 	"strconv"
 )
 
+func GetBoolean(val interface{}) (bool, error) {
+	switch val.(type) {
+	case bool:
+		return val.(bool), nil
+	case int, uint, int8, uint8, int32, uint32, int64, uint64, float32, float64:
+		{
+			getInt64, err := GetInt64(val)
+			if err != nil {
+				return false, err
+			}
+			if getInt64 == 0 {
+				return false, nil
+			} else if getInt64 == 1 {
+				return true, nil
+			} else {
+				return false, errors.New("not 0 or 1 can not convert boolean")
+			}
+		}
+	case string:
+		if val.(string) == "true" {
+			return true, nil
+		} else if val.(string) == "false" {
+			return false, nil
+		} else if val.(string) == "1" {
+			return true, nil
+		} else if val.(string) == "0" {
+			return false, nil
+		} else {
+			return false, errors.New("can not convert string to boolean")
+		}
+	default:
+		return false, errors.New("value type:" + typeof(val) + " can not convert to int")
+	}
+}
+
+func GetBooleanWithDefault(val interface{}, defaultVal bool) bool {
+	boolVal, err := GetBoolean(val)
+	if err != nil {
+		return defaultVal
+	}
+
+	return boolVal
+}
+
 func GetInt8(val interface{}) (int8, error) {
 	// 把值统一转为 int
 	i, err := GetInt64(val)
@@ -197,6 +241,7 @@ func GetInt64(val interface{}) (int64, error) {
 			return int64(intVal), nil
 		}
 	case float64:
+		// float 差越界判断
 		float, _ := val.(float64)
 		if isInteger(float) {
 			return int64(float), nil
@@ -211,7 +256,7 @@ func GetInt64(val interface{}) (int64, error) {
 			return 0, errors.New(strconv.FormatFloat(float64(float), 'e', 5, 32) + " is not integer")
 		}
 	default:
-		return 0, errors.New("value type:" + typeof(val) + " can not convert to int dp")
+		return 0, errors.New("value type:" + typeof(val) + " can not convert to int")
 	}
 }
 
@@ -274,7 +319,9 @@ func typeof(v interface{}) string {
 	return reflect.TypeOf(v).String()
 }
 
+// 判断是否是整数 float
 func isInteger(a float64) bool {
+	// float64(int64(a)) 会截取小数点之前的部分
 	if a-float64(int64(a)) == 0 {
 		return true
 	} else {
