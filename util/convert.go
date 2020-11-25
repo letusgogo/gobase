@@ -22,18 +22,12 @@ func GetBoolean(val interface{}) (bool, error) {
 		} else {
 			return false, errors.New("not 0 or 1 can not convert boolean")
 		}
-
 	case string:
-		if val.(string) == "true" {
-			return true, nil
-		} else if val.(string) == "false" {
-			return false, nil
-		} else if val.(string) == "1" {
-			return true, nil
-		} else if val.(string) == "0" {
-			return false, nil
+		parseBool, err := strconv.ParseBool(val.(string))
+		if err != nil {
+			return false, err
 		} else {
-			return false, errors.New("can not convert string to boolean")
+			return parseBool, nil
 		}
 	default:
 		return false, errors.New("value type:" + typeof(val) + " can not convert to int")
