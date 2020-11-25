@@ -64,3 +64,34 @@ func TestGetBoolean(t *testing.T) {
 		})
 	}
 }
+
+func TestGetFloat(t *testing.T) {
+	type args struct {
+		val interface{}
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    float64
+		wantErr bool
+	}{
+		{name: "ok", args: args{val: 1}, want: 1, wantErr: false},
+		{name: "ok1", args: args{val: 1.0}, want: 1.0, wantErr: false},
+
+		{name: "ok3", args: args{val: "1.1"}, want: 1.1, wantErr: false},
+		{name: "ok4", args: args{val: "1.1"}, want: 1.1, wantErr: false},
+		{name: "failed", args: args{val: "a"}, want: 0.0, wantErr: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := GetFloat(tt.args.val)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetFloat() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("GetFloat() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

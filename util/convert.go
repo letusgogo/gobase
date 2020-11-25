@@ -50,6 +50,35 @@ func GetBooleanWithDefault(val interface{}, defaultVal bool) bool {
 	return boolVal
 }
 
+func GetFloat(val interface{}) (float64, error) {
+	switch val.(type) {
+	case float32:
+		return float64(val.(float32)), nil
+	case float64:
+		return val.(float64), nil
+	case string:
+		float, err := strconv.ParseFloat(val.(string), 64)
+		if err != nil {
+			return 0.0, err
+		} else {
+			return float, nil
+		}
+	case int:
+		return float64(val.(int)), nil
+	default:
+		return 0.0, errors.New("value type:" + typeof(val) + " can not convert to float")
+	}
+}
+
+func GetFloatWithDefault(val interface{}, defaultVal float64) float64 {
+	float, err := GetFloat(val)
+	if err != nil {
+		return defaultVal
+	}
+
+	return float
+}
+
 func GetInt8(val interface{}) (int8, error) {
 	// 把值统一转为 int
 	i, err := GetInt64(val)
