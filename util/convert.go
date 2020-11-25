@@ -11,19 +11,18 @@ func GetBoolean(val interface{}) (bool, error) {
 	case bool:
 		return val.(bool), nil
 	case int, uint, int8, uint8, int32, uint32, int64, uint64, float32, float64:
-		{
-			getInt64, err := GetInt64(val)
-			if err != nil {
-				return false, err
-			}
-			if getInt64 == 0 {
-				return false, nil
-			} else if getInt64 == 1 {
-				return true, nil
-			} else {
-				return false, errors.New("not 0 or 1 can not convert boolean")
-			}
+		getInt64, err := GetInt64(val)
+		if err != nil {
+			return false, err
 		}
+		if getInt64 == 0 {
+			return false, nil
+		} else if getInt64 == 1 {
+			return true, nil
+		} else {
+			return false, errors.New("not 0 or 1 can not convert boolean")
+		}
+
 	case string:
 		if val.(string) == "true" {
 			return true, nil
