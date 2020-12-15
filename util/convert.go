@@ -234,6 +234,12 @@ func GetInt64(val interface{}) (int64, error) {
 		return 0, errors.New("nil pointer")
 	}
 	switch val.(type) {
+	case bool:
+		if val.(bool) {
+			return int64(1), nil
+		} else {
+			return int64(0), nil
+		}
 	case int:
 		return int64(val.(int)), nil
 	case uint:
