@@ -10,27 +10,27 @@ import (
 )
 
 ///////////////////////////加密的入口 ////////////////////////////////
-type cryptoUtil struct {
-	aes    aesEncryption
-	base64 base64Encryption
-	md5    md5Encryption
+type CryptoUtil struct {
+	Aes    AesEncryption
+	Base64 Base64Encryption
+	Md5    Md5Encryption
 }
 
-func NewCryptoUtil() *cryptoUtil {
-	crypto := new(cryptoUtil)
+func NewCryptoUtil() *CryptoUtil {
+	crypto := new(CryptoUtil)
 	return crypto
 }
 
 ///////////////////////////////补全方式的接口和实现////////////////////////
-type pad interface {
+type Pad interface {
 	Padding(ciphertext []byte, blockSize int) []byte
 	UnPadding(origData []byte) []byte
 }
 
-type PKCS5 struct {
+type PKCS7 struct {
 }
 
-func (P PKCS5) Padding(ciphertext []byte, blockSize int) []byte {
+func (P PKCS7) Padding(ciphertext []byte, blockSize int) []byte {
 	padding := blockSize - len(ciphertext)%blockSize
 	//填充
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
@@ -38,14 +38,14 @@ func (P PKCS5) Padding(ciphertext []byte, blockSize int) []byte {
 	return append(ciphertext, padtext...)
 }
 
-func (P PKCS5) UnPadding(origData []byte) []byte {
+func (P PKCS7) UnPadding(origData []byte) []byte {
 	length := len(origData)
 	unPadding := int(origData[length-1])
 	return origData[:(length - unPadding)]
 }
 
 /////////////////////////////加密方式的接口和实现///////////////////////
-type mode interface {
+type Mode interface {
 	Encrypt(iv []byte, block cipher.Block, encodeBytes []byte) ([]byte, error)
 	Decrypt(iv []byte, block cipher.Block, decodeBytes []byte) ([]byte, error)
 }
@@ -74,18 +74,18 @@ type Encryption interface {
 }
 
 //=======================Aes实现===========================
-type aesEncryption struct {
+type AesEncryption struct {
 	//key
 	secretKey []byte
 	//iv
 	secretIv []byte
 	//加密方式
-	mode mode
+	mode Mode
 	//补全方式
-	pad pad
+	pad Pad
 }
 
-func (aesEncryption *aesEncryption) judgeOption() error {
+func (aesEncryption *AesEncryption) JudgeOption() error {
 	SecretKey := aesEncryption.secretKey
 	SecretIv := aesEncryption.secretIv
 	if len(SecretKey) != 16 && len(SecretKey) != 24 && len(SecretKey) != 32 {
@@ -95,21 +95,21 @@ func (aesEncryption *aesEncryption) judgeOption() error {
 		return errors.New("key and iv must be equal")
 	}
 	if aesEncryption.mode == nil || aesEncryption.pad == nil {
-		return errors.New("mode and pad not empty")
+		return errors.New("Mode and Pad not empty")
 	}
 	return nil
 }
 
-func (aesEncryption *aesEncryption) SetOption(SecretKey []byte, SecretIv []byte, mode mode, pad pad) error {
+func (aesEncryption *AesEncryption) SetOption(SecretKey []byte, SecretIv []byte, mode Mode, pad Pad) error {
 	aesEncryption.secretKey = SecretKey
 	aesEncryption.secretIv = SecretIv
 	aesEncryption.mode = mode
 	aesEncryption.pad = pad
-	return aesEncryption.judgeOption()
+	return aesEncryption.JudgeOption()
 }
 
-func (aesEncryption *aesEncryption) Encrypt(encodeBytes []byte) ([]byte, error) {
-	if err := aesEncryption.judgeOption(); err != nil {
+func (aesEncryption *AesEncryption) Encrypt(encodeBytes []byte) ([]byte, error) {
+	if err := aesEncryption.JudgeOption(); err != nil {
 		return nil, err
 	}
 	//根据key 生成密文
@@ -123,8 +123,8 @@ func (aesEncryption *aesEncryption) Encrypt(encodeBytes []byte) ([]byte, error) 
 	return crypted, nil
 }
 
-func (aesEncryption *aesEncryption) Decrypt(decodeBytes []byte) ([]byte, error) {
-	if err := aesEncryption.judgeOption(); err != nil {
+func (aesEncryption *AesEncryption) Decrypt(decodeBytes []byte) ([]byte, error) {
+	if err := aesEncryption.JudgeOption(); err != nil {
 		return nil, err
 	}
 	block, err := aes.NewCipher(aesEncryption.secretKey)
@@ -136,30 +136,30 @@ func (aesEncryption *aesEncryption) Decrypt(decodeBytes []byte) ([]byte, error) 
 	return origData, nil
 }
 
-//========================== md5 ===============================
-type md5Encryption struct {
+//========================== Md5 ===============================
+type Md5Encryption struct {
 }
 
-func (md5Encryption md5Encryption) Encrypt(encodeBytes []byte) ([]byte, error) {
+func (md5Encryption Md5Encryption) Encrypt(encodeBytes []byte) ([]byte, error) {
 	h := md5.New()
 	h.Write(encodeBytes)
 	return h.Sum(nil), nil
 	//return hex.EncodeToString(h.Sum(nil)), nil
 }
 
-func (md5Encryption md5Encryption) Decrypt(decodeBytes []byte) ([]byte, error) {
+func (md5Encryption Md5Encryption) Decrypt(decodeBytes []byte) ([]byte, error) {
 	panic("please implement me")
 }
 
-//============================base64===========================
-type base64Encryption struct {
+//============================Base64===========================
+type Base64Encryption struct {
 }
 
-func (base64Encryption base64Encryption) Encrypt(encodeBytes []byte) ([]byte, error) {
+func (base64Encryption Base64Encryption) Encrypt(encodeBytes []byte) ([]byte, error) {
 	return []byte(base64.StdEncoding.EncodeToString(encodeBytes)), nil
 }
 
-func (base64Encryption base64Encryption) Decrypt(decodeBytes []byte) ([]byte, error) {
+func (base64Encryption Base64Encryption) Decrypt(decodeBytes []byte) ([]byte, error) {
 	decodeBytes, err := base64.StdEncoding.DecodeString(string(decodeBytes))
 	if err != nil {
 		return nil, err
