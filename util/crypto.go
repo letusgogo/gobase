@@ -26,8 +26,8 @@ func NewCrypto() *crypto {
 }
 
 type encMap struct {
-	base64 Encryption
-	md5    Encryption
+	base64 base64Encryption
+	md5    md5Encryption
 }
 
 type padMap struct {
