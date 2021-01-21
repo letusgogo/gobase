@@ -13,9 +13,9 @@ type RpcError interface {
 
 // 定义错误
 type ErrInfo struct {
-	Ret   int32  // 错误码
-	Msg   string // 展示给用户看的
-	Error error  // 保存内部错误信息
+	Ret int32  // 错误码
+	Msg string // 展示给用户看的
+	Err error  // 保存内部错误信息
 }
 
 func (e *ErrInfo) GetRet() int32 {
@@ -24,6 +24,21 @@ func (e *ErrInfo) GetRet() int32 {
 
 func (e *ErrInfo) GetMsg() string {
 	return e.Msg
+}
+
+func (e *ErrInfo) Is(info *ErrInfo) bool {
+	if info == nil {
+		return false
+	}
+	if e.Ret == info.Ret {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (e *ErrInfo) IsErrNot() bool {
+	return e.Is(ErrNot)
 }
 
 //ret=0 成功。
@@ -44,16 +59,16 @@ var (
 //noinspection ALL
 func NewErrInfo(info *ErrInfo, msg string, err error) *ErrInfo {
 	errInfo := &ErrInfo{
-		Ret:   info.Ret,
-		Msg:   info.Msg,
-		Error: info.Error,
+		Ret: info.Ret,
+		Msg: info.Msg,
+		Err: info.Err,
 	}
 	if msg != "" {
 		errInfo.Msg = msg
 	}
 
 	if err != nil {
-		errInfo.Error = err
+		errInfo.Err = err
 	}
 	return errInfo
 }

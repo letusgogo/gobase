@@ -1,6 +1,7 @@
 package util
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 )
@@ -75,4 +76,17 @@ func TestWriteRpcRspNil(t *testing.T) {
 	if rsp.Msg != "success" {
 		t.Error("rsp.Ret is not success")
 	}
+}
+
+func TestNewErrInfo(t *testing.T) {
+	errInfo := NewErrInfo(ErrNot, "ok", nil)
+	if !errInfo.Is(ErrNot) {
+		t.Fatal("not ErrNot")
+	}
+
+	if !errInfo.IsErrNot() {
+		t.Fatal("not ErrNot")
+	}
+
+	errors.Is()
 }
