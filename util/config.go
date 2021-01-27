@@ -4,28 +4,6 @@ import "fmt"
 
 const middlewareNamespace = "middleware"
 
-type MidMysqlConf struct {
-	Host         string `json:"Host"`
-	MaxIdleConns int    `json:"MaxIdleConns"`
-	MaxOpenConns int    `json:"MaxOpenConns"`
-}
-
-type MidRedisConf struct {
-	Addr        string `json:"Addr"`
-	Password    string `json:"Password"`
-	PoolSize    int    `json:"PoolSize"`
-	MaxRetries  int    `json:"MaxRetries"`
-	IdleTimeout int64  `json:"IdleTimeout"`
-}
-
-type MidInfluxDBConf struct {
-	Addr string `json:"Addr"`
-}
-
-type MidKafkaConf struct {
-	Addr string `json:"Addr"`
-}
-
 func MiddlewareNamespace() string {
 	return middlewareNamespace
 }
