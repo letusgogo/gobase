@@ -29,6 +29,8 @@ type KafkaConf struct {
 type SmsConf struct {
 	AccessKeyId     string `json:"AccessKeyId"`
 	AccessKeySecret string `json:"AccessKeySecret"`
+	SignName        string `json:"SignName"`
+	TemplateCode    string `json:"TemplateCode"`
 }
 
 type BrokerConf struct {
