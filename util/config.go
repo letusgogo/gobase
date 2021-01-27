@@ -26,7 +26,7 @@ type MidKafkaConf struct {
 	Addr string `json:"Addr"`
 }
 
-func GetMiddlewareNamespace() string {
+func MiddlewareNamespace() string {
 	return middlewareNamespace
 }
 
