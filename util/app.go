@@ -18,16 +18,6 @@ var (
 	logLevel = zapcore.DebugLevel
 )
 
-type RegistryConf struct {
-	Type    string
-	Address string
-}
-
-type BrokerConf struct {
-	Type    string
-	Address string
-}
-
 func GetLogLevel() zapcore.Level {
 	return logLevel
 }
@@ -150,14 +140,14 @@ func getRegistryFromConf(ctx *cli.Context) {
 		_ = ctx.Set("registry", regTypeCmd)
 		_ = ctx.Set("registry_address", regAddrCmd)
 	} else {
-		//从配置中心获取注册中心信息
+		// 从配置中心 middleware 获取 registry 配置
 		registryConf := RegistryConf{}
-		err = config.Get(GetEnv(), GetAppName(), "registry").Scan(&registryConf)
+		err = config.Get(GetEnv(), MiddlewareNamespace(), "registry").Scan(&registryConf)
 		if err != nil {
 			panic(err)
 		}
 		_ = ctx.Set("registry", registryConf.Type)
-		_ = ctx.Set("registry_address", registryConf.Address)
+		_ = ctx.Set("registry_address", registryConf.Addr)
 	}
 
 	// 如果命令行指定了则使用命令行指定的否则使用配置中心的 broker
@@ -167,14 +157,15 @@ func getRegistryFromConf(ctx *cli.Context) {
 		_ = ctx.Set("broker", brokerTypeCmd)
 		_ = ctx.Set("broker_address", brokerAddressCmd)
 	} else {
+		// 从配置中心 middleware 获取 broker 配置
 		brokerConf := BrokerConf{}
-		err = config.Get(GetEnv(), GetAppName(), "broker").Scan(&brokerConf)
+		err = config.Get(GetEnv(), MiddlewareNamespace(), "broker").Scan(&brokerConf)
 		if err != nil {
 			panic(err)
 		}
 		if brokerConf.Type != "" {
 			_ = ctx.Set("broker", brokerConf.Type)
-			_ = ctx.Set("broker_address", brokerConf.Address)
+			_ = ctx.Set("broker_address", brokerConf.Addr)
 		}
 	}
 
