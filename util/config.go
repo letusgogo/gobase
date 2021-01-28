@@ -18,14 +18,17 @@ type RedisConf struct {
 	IdleTimeout int64  `json:"IdleTimeout"`
 }
 
+// influxdb 配置
 type InfluxDBConf struct {
 	Addr string `json:"Addr"`
 }
 
+// kafka 配置
 type KafkaConf struct {
 	Addr string `json:"Addr"`
 }
 
+// 短信配置
 type SmsConf struct {
 	AccessKeyId     string `json:"AccessKeyId"`
 	AccessKeySecret string `json:"AccessKeySecret"`
@@ -33,9 +36,15 @@ type SmsConf struct {
 	TemplateCode    string `json:"TemplateCode"`
 }
 
+// 服务的 Broker 配置
 type BrokerConf struct {
 	Type string
 	Addr string
+}
+
+// mqtt 配置
+type MqttConf struct {
+	Brokers []string
 }
 
 // 注册中心相关的配置
