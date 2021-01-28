@@ -1,7 +1,6 @@
 package util
 
 import (
-	"errors"
 	"fmt"
 	"testing"
 )
@@ -87,6 +86,4 @@ func TestNewErrInfo(t *testing.T) {
 	if !errInfo.IsErrNot() {
 		t.Fatal("not ErrNot")
 	}
-
-	errors.Is()
 }
