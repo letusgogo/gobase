@@ -164,6 +164,7 @@ func (c *RegistryConf) String() string {
 type AppMysqlConf struct {
 	User         string `json:"User"`
 	Pass         string `json:"Pass"`
+	Debug        bool   `json:"Debug"`
 	DBName       string `json:"DBName"`
 	MaxIdleConns int    `json:"MaxIdleConns"`
 	MaxOpenConns int    `json:"MaxOpenConns"`
