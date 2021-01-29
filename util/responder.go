@@ -53,11 +53,19 @@ var (
 	ErrRpc      = &ErrInfo{5, "rpc call error", nil}
 )
 
+func NewErrInfo(ret int32, msg string, err error) *ErrInfo {
+	return &ErrInfo{
+		Ret: ret,
+		Msg: msg,
+		Err: err,
+	}
+}
+
 // 从 info 创建一个新的 ErrInfo 类型的对象。
 // 当 msg 不为空,则用 msg 替换原 msg
 // 当 err 不为 nil,则用 err 替换 原 err
 //noinspection ALL
-func NewErrInfo(info *ErrInfo, msg string, err error) *ErrInfo {
+func NewErrInfoFrom(info *ErrInfo, msg string, err error) *ErrInfo {
 	errInfo := &ErrInfo{
 		Ret: info.Ret,
 		Msg: info.Msg,
