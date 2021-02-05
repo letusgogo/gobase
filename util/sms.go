@@ -65,23 +65,3 @@ func (s *SmsService) sendSmsMsg(telephone, templateParam string) error {
 		return nil
 	}
 }
-
-type SmsDevEventService struct {
-	*SmsService
-}
-
-func NewSmsDevEventService(smsService *SmsService) *SmsDevEventService {
-	return &SmsDevEventService{SmsService: smsService}
-}
-
-// 发送设备信息通知短信
-type SmsEvent struct {
-	Name     string `json:"name"`
-	DevName  string `json:"devName"`
-	RuleName string `json:"ruleName"`
-}
-
-func (s *SmsDevEventService) SendEventSms(telephone string, eventSms *SmsEvent) error {
-	eventSmsJsonStr, _ := json.Marshal(eventSms)
-	return s.sendSmsMsg(telephone, string(eventSmsJsonStr))
-}

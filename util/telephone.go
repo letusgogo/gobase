@@ -46,24 +46,3 @@ func (t *TelService) SendVoice(telephone, ttsParam string) error {
 		return nil
 	}
 }
-
-type TelDevEvent struct {
-	Name     string `json:"name"`
-	DevName  string `json:"devName"`
-	RuleName string `json:"ruleName"`
-}
-
-type TelDevEventService struct {
-	*TelService
-}
-
-func NewTelDevEventService(telService *TelService) *TelDevEventService {
-	return &TelDevEventService{TelService: telService}
-}
-
-func (t *TelDevEventService) SendVoice(telephone string, eventSms *TelDevEvent) error {
-	eventSmsJsonStr, _ := json.Marshal(eventSms)
-	ttsParam := string(eventSmsJsonStr)
-
-	return t.TelService.SendVoice(telephone, ttsParam)
-}
