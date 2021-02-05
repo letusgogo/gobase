@@ -30,7 +30,7 @@ type smsRsp struct {
 
 // telephone 发送短信的号码
 // templateParam 发送的模板消息
-func (s *SmsService) sendSmsMsg(telephone, templateParam string) error {
+func (s *SmsService) SendSmsMsg(telephone, templateParam string) error {
 	// 开启了 debug 模式不真正发短信
 	if s.smsConf.Debug {
 		log.Debug("send sms msg", zap.String("msg", templateParam))

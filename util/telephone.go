@@ -1,7 +1,6 @@
 package util
 
 import (
-	"encoding/json"
 	"errors"
 	"git.iothinking.com/base/gobase/conf"
 	"git.iothinking.com/base/gobase/log"

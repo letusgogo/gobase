@@ -2,6 +2,7 @@ package util
 
 import (
 	"fmt"
+	"git.iothinking.com/base/gobase/conf"
 	"git.iothinking.com/base/gobase/log"
 	"github.com/micro/cli"
 	"github.com/micro/go-micro/config"
@@ -141,8 +142,8 @@ func getRegistryFromConf(ctx *cli.Context) {
 		_ = ctx.Set("registry_address", regAddrCmd)
 	} else {
 		// 从配置中心 middleware 获取 registry 配置
-		registryConf := RegistryConf{}
-		err = config.Get(GetEnv(), MiddlewareNamespace(), "registry").Scan(&registryConf)
+		registryConf := conf.RegistryConf{}
+		err = config.Get(GetEnv(), conf.MiddlewareNamespace(), "registry").Scan(&registryConf)
 		if err != nil {
 			panic(err)
 		}
@@ -158,8 +159,8 @@ func getRegistryFromConf(ctx *cli.Context) {
 		_ = ctx.Set("broker_address", brokerAddressCmd)
 	} else {
 		// 从配置中心 middleware 获取 broker 配置
-		brokerConf := BrokerConf{}
-		err = config.Get(GetEnv(), MiddlewareNamespace(), "broker").Scan(&brokerConf)
+		brokerConf := conf.BrokerConf{}
+		err = config.Get(GetEnv(), conf.MiddlewareNamespace(), "broker").Scan(&brokerConf)
 		if err != nil {
 			panic(err)
 		}
