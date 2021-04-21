@@ -33,7 +33,7 @@ type smsRsp struct {
 func (s *SmsService) SendSmsMsg(telephone, templateParam string) error {
 	// 开启了 debug 模式不真正发短信
 	if s.smsConf.Debug {
-		log.Debug("send sms msg", zap.String("msg", templateParam))
+		log.Warn("send sms msg", zap.String("msg", templateParam))
 		return nil
 	}
 

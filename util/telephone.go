@@ -22,7 +22,7 @@ func NewTelService(telConf *conf.TelConf, telClient *dyvmsapi.Client) *TelServic
 func (t *TelService) SendVoice(telephone, ttsParam string) error {
 	// 开启了 debug 模式不真正打电话
 	if t.telConf.Debug {
-		log.Debug("send telephone msg", zap.String("msg", ttsParam))
+		log.Warn("send telephone msg", zap.String("msg", ttsParam))
 		return nil
 	}
 	request := dyvmsapi.CreateSingleCallByTtsRequest()
