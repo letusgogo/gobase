@@ -40,15 +40,15 @@ func SetAppName(name string) {
 	appName = name
 }
 
-func GetEnv() string {
+func GetAppEnv() string {
 	if appEnv == "" {
-		panic("--env is empty")
+		panic("--app_env is empty")
 	}
 	return appEnv
 }
 
-func SetEnv(env string) {
-	appEnv = env
+func SetAppEnv(app_env string) {
+	appEnv = app_env
 }
 
 func InitApp(myCmd cmd.Cmd) {
@@ -57,7 +57,7 @@ func InitApp(myCmd cmd.Cmd) {
 }
 
 func InitLog() {
-	log.InitLogWithPath("logs/"+GetEnv()+"/", GetAppName(), GetLogLevel())
+	log.InitLogWithPath("logs/"+GetAppEnv()+"/", GetAppName(), GetLogLevel())
 }
 
 func InitConf() {
@@ -88,9 +88,9 @@ func InitCmd(updateCmd cmd.Cmd) {
 			EnvVars: []string{"APP_NAME"},
 		},
 		&cli.StringFlag{
-			Name:    "env",
-			Usage:   "set app run environment",
-			EnvVars: []string{"ENV"},
+			Name:    "app_env",
+			Usage:   "set app run app_environment",
+			EnvVars: []string{"APP_ENV"},
 		},
 		&cli.StringFlag{
 			Name:    "log_level",
@@ -140,7 +140,7 @@ func getRegistryFromConf(ctx *cli.Context) {
 	} else {
 		// 从配置中心 middleware 获取 registry 配置
 		registryConf := conf.RegistryConf{}
-		err = config.Get(GetEnv(), conf.MiddlewareNamespace(), "registry").Scan(&registryConf)
+		err = config.Get(GetAppEnv(), conf.MiddlewareNamespace(), "registry").Scan(&registryConf)
 		if err != nil {
 			panic(err)
 		}
@@ -157,7 +157,7 @@ func getRegistryFromConf(ctx *cli.Context) {
 	} else {
 		// 从配置中心 middleware 获取 broker 配置
 		brokerConf := conf.BrokerConf{}
-		err = config.Get(GetEnv(), conf.MiddlewareNamespace(), "broker").Scan(&brokerConf)
+		err = config.Get(GetAppEnv(), conf.MiddlewareNamespace(), "broker").Scan(&brokerConf)
 		if err != nil {
 			panic(err)
 		}
@@ -171,12 +171,12 @@ func getRegistryFromConf(ctx *cli.Context) {
 
 func getAppInfo(ctx *cli.Context) {
 	// 命令行中获取基本信息
-	env := ctx.String("env")
-	if env == "" {
-		panic("env is empty")
+	appEnv := ctx.String("appEnv")
+	if appEnv == "" {
+		panic("appEnv is empty")
 	}
-	SetEnv(env)
-	fmt.Println("env:", env)
+	SetAppEnv(appEnv)
+	fmt.Println("appEnv:", appEnv)
 
 	appName := ctx.String("app_name")
 	if appName == "" {
