@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"git.iothinking.com/base/gobase/conf"
 	"git.iothinking.com/base/gobase/log"
-	"github.com/micro/cli"
-	"github.com/micro/go-micro/config"
-	"github.com/micro/go-micro/config/cmd"
-	"github.com/micro/go-plugins/broker/kafka"
-	consulConfig "github.com/micro/go-plugins/config/source/consul"
-	consultRegistry "github.com/micro/go-plugins/registry/consul"
+	"github.com/micro/cli/v2"
+	"github.com/micro/go-micro/v2/config"
+	"github.com/micro/go-micro/v2/config/cmd"
+	consulConfig "github.com/micro/go-plugins/config/source/consul/v2"
+	consultRegistry "github.com/micro/go-plugins/registry/consul/v2"
 	"go.uber.org/zap/zapcore"
 )
 
@@ -81,24 +80,22 @@ func InitConf() {
 func InitCmd(updateCmd cmd.Cmd) {
 	// 默认注册中心添加 consul 作为注册中心
 	cmd.DefaultRegistries["consul"] = consultRegistry.NewRegistry
-	// 默认的 kafka 作为 broker
-	cmd.DefaultBrokers["kafka"] = kafka.NewBroker
 	// 增加命令行
 	updateCmd.App().Flags = append(cmd.DefaultFlags,
-		cli.StringFlag{
-			Name:   "app_name",
-			Usage:  "set app name",
-			EnvVar: "APP_NAME",
+		&cli.StringFlag{
+			Name:    "app_name",
+			Usage:   "set app name",
+			EnvVars: []string{"APP_NAME"},
 		},
-		cli.StringFlag{
-			Name:   "env",
-			Usage:  "set app run environment",
-			EnvVar: "ENV",
+		&cli.StringFlag{
+			Name:    "env",
+			Usage:   "set app run environment",
+			EnvVars: []string{"ENV"},
 		},
-		cli.StringFlag{
-			Name:   "log_level",
-			Usage:  "log level",
-			EnvVar: "LOG_LEVEL",
+		&cli.StringFlag{
+			Name:    "log_level",
+			Usage:   "log level",
+			EnvVars: []string{"LOG_LEVEL"},
 		},
 	)
 
