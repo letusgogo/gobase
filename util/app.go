@@ -7,48 +7,52 @@ import (
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2/config"
 	"github.com/micro/go-micro/v2/config/cmd"
-	consulConfig "github.com/micro/go-plugins/config/source/consul/v2"
-	consultRegistry "github.com/micro/go-plugins/registry/consul/v2"
 	"go.uber.org/zap/zapcore"
+	// 统一配置中心
+	consulConfig "github.com/micro/go-plugins/config/source/consul/v2"
+
+	// 加载服务发现,注册中心. 可以 backup 防止一个不行了
+	_ "github.com/micro/go-plugins/registry/consul/v2"
+	_ "github.com/micro/go-plugins/registry/kubernetes/v2"
 )
 
 var (
-	appName  = ""
-	appEnv   = ""
-	logLevel = zapcore.DebugLevel
+	GAppName  = ""
+	GAppEnv   = ""
+	GLogLevel = zapcore.DebugLevel
 )
 
 func GetLogLevel() zapcore.Level {
-	return logLevel
+	return GLogLevel
 }
 
 func SetLogLevel(levelStr string) {
-	err := logLevel.UnmarshalText([]byte(levelStr))
+	err := GLogLevel.UnmarshalText([]byte(levelStr))
 	if err != nil {
 		panic(err)
 	}
 }
 
 func GetAppName() string {
-	if appName == "" {
+	if GAppName == "" {
 		panic("--app_name is empty")
 	}
-	return appName
+	return GAppName
 }
 
 func SetAppName(name string) {
-	appName = name
+	GAppName = name
 }
 
 func GetAppEnv() string {
-	if appEnv == "" {
+	if GAppEnv == "" {
 		panic("--app_env is empty")
 	}
-	return appEnv
+	return GAppEnv
 }
 
-func SetAppEnv(app_env string) {
-	appEnv = app_env
+func SetAppEnv(appEnv string) {
+	GAppEnv = appEnv
 }
 
 func InitApp(myCmd cmd.Cmd) {
@@ -78,8 +82,7 @@ func InitConf() {
 }
 
 func InitCmd(updateCmd cmd.Cmd) {
-	// 默认注册中心添加 consul 作为注册中心
-	cmd.DefaultRegistries["consul"] = consultRegistry.NewRegistry
+	// 默认注册中心添加 consul, k8s 作为注册中心
 	// 增加命令行
 	updateCmd.App().Flags = append(cmd.DefaultFlags,
 		&cli.StringFlag{
@@ -171,16 +174,16 @@ func getRegistryFromConf(ctx *cli.Context) {
 
 func getAppInfo(ctx *cli.Context) {
 	// 命令行中获取基本信息
-	appEnv := ctx.String("appEnv")
+	appEnv := ctx.String("app_env")
 	if appEnv == "" {
-		panic("appEnv is empty")
+		panic("app_env is empty")
 	}
 	SetAppEnv(appEnv)
-	fmt.Println("appEnv:", appEnv)
+	fmt.Println("app_env:", appEnv)
 
 	appName := ctx.String("app_name")
 	if appName == "" {
-		panic("appName is empty")
+		panic("app_name is empty")
 	}
 	SetAppName(appName)
 	fmt.Println("app_name:", appName)
