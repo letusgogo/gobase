@@ -214,3 +214,10 @@ func GetMysqlUrl(host, user, pass, dBName string) string {
 	result := fmt.Sprintf("%v:%v@tcp(%v)/%v?%v", user, pass, host, dBName, dBOption)
 	return result
 }
+
+// 图形验证码
+type Captcha struct {
+	KeyLong   int32 `mapstructure:"key-long" json:"keyLong" yaml:"key-long"`
+	ImgWidth  int32 `mapstructure:"img-width" json:"imgWidth" yaml:"img-width"`
+	ImgHeight int32 `mapstructure:"img-height" json:"imgHeight" yaml:"img-height"`
+}
