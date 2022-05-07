@@ -191,6 +191,8 @@ type AppMysqlConf struct {
 	DBName       string `json:"db_name" mapstructure:"db_name"`
 	MaxIdleConns int    `json:"maxIdle_conns"  mapstructure:"maxIdle_conns"`
 	MaxOpenConns int    `json:"max_open_conns" mapstructure:"max_open_conns"`
+	DBOption     string `json:"db_option" mapstructure:"db_option"`
+	LogMode      bool   `json:"log_mode" mapstructure:"log_mode"`
 }
 
 func (m *AppMysqlConf) String() string {
@@ -211,8 +213,7 @@ func MiddlewareNamespace() string {
 }
 
 func (m *AppMysqlConf) GetMysqlUrl() string {
-	dBOption := "charset=utf8&parseTime=True&loc=Local"
-	result := fmt.Sprintf("%v:%v@tcp(%v)/%v?%v", m.User, m.Pass, m.Host, m.DBName, dBOption)
+	result := fmt.Sprintf("%v:%v@tcp(%v)/%v?%v", m.User, m.Pass, m.Host, m.DBName, m.DBOption)
 	return result
 }
 
