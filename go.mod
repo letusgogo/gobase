@@ -1,4 +1,4 @@
-module git.iothinking.com/base/gobase
+module github.com/letusgogo/gobase
 
 require (
 	github.com/Shopify/sarama v1.27.2

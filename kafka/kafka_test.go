@@ -2,7 +2,7 @@ package kafka
 
 import (
 	"fmt"
-	"git.iothinking.com/base/gobase/log"
+	"github.com/letusgogo/gobase/log"
 	"go.uber.org/zap/zapcore"
 	"sync/atomic"
 	"testing"

@@ -2,7 +2,7 @@ package http
 
 import (
 	"bytes"
-	"git.iothinking.com/base/gobase/log"
+	"github.com/letusgogo/gobase/log"
 	"go.uber.org/zap/zapcore"
 	"io/ioutil"
 	"net/http"

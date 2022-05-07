@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"git.iothinking.com/base/gobase/util"
+	"github.com/letusgogo/gobase/util"
 )
 
 // 创建一个 user 请求

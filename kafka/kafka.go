@@ -2,9 +2,9 @@ package kafka
 
 import (
 	"context"
-	"git.iothinking.com/base/gobase/log"
 	"github.com/Shopify/sarama"
 	"github.com/google/uuid"
+	"github.com/letusgogo/gobase/log"
 	"go.uber.org/zap"
 	"sync"
 	"time"
