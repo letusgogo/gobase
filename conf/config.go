@@ -216,7 +216,7 @@ func (m *AppMysqlConf) GetMysqlUrl() string {
 	return result
 }
 
-// 图形验证码
+// Captcha 图形验证码
 type Captcha struct {
 	KeyLong   int32 `mapstructure:"key-long" json:"keyLong" yaml:"key-long"`
 	ImgWidth  int32 `mapstructure:"img-width" json:"imgWidth" yaml:"img-width"`
