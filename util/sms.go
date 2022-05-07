@@ -3,10 +3,10 @@ package util
 import (
 	"encoding/json"
 	"errors"
-	"git.iothinking.com/base/gobase/conf"
-	"git.iothinking.com/base/gobase/log"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
+	"github.com/letusgogo/gobase/conf"
+	"github.com/letusgogo/gobase/log"
 	"go.uber.org/zap"
 )
 

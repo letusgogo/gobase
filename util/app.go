@@ -2,8 +2,8 @@ package util
 
 import (
 	"fmt"
-	"git.iothinking.com/base/gobase/conf"
-	"git.iothinking.com/base/gobase/log"
+	"github.com/letusgogo/gobase/conf"
+	"github.com/letusgogo/gobase/log"
 	"github.com/micro/cli/v2"
 	"github.com/micro/go-micro/v2/config"
 	"github.com/micro/go-micro/v2/config/cmd"

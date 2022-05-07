@@ -2,10 +2,10 @@ package util
 
 import (
 	"errors"
-	"git.iothinking.com/base/gobase/conf"
-	"git.iothinking.com/base/gobase/log"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dyvmsapi"
+	"github.com/letusgogo/gobase/conf"
+	"github.com/letusgogo/gobase/log"
 	"go.uber.org/zap"
 )
 
