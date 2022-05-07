@@ -184,12 +184,13 @@ func (c *RegistryConf) String() string {
 }
 
 type AppMysqlConf struct {
-	User         string `json:"User"`
-	Pass         string `json:"Pass"`
-	Debug        bool   `json:"Debug"`
-	DBName       string `json:"DBName"`
-	MaxIdleConns int    `json:"MaxIdleConns"`
-	MaxOpenConns int    `json:"MaxOpenConns"`
+	User         string `json:"user" mapstructure:"host"`
+	Pass         string `json:"pass" mapstructure:"pass"`
+	Debug        bool   `json:"debug" mapstructure:"debug"`
+	Host         string `json:"host" mapstructure:"host"`
+	DBName       string `json:"db_name" mapstructure:"db_name"`
+	MaxIdleConns int    `json:"maxIdle_conns"  mapstructure:"maxIdle_conns"`
+	MaxOpenConns int    `json:"max_open_conns" mapstructure:"max_open_conns"`
 }
 
 func (m *AppMysqlConf) String() string {
@@ -209,9 +210,9 @@ func MiddlewareNamespace() string {
 	return middlewareNamespace
 }
 
-func GetMysqlUrl(host, user, pass, dBName string) string {
+func (m *AppMysqlConf) GetMysqlUrl() string {
 	dBOption := "charset=utf8&parseTime=True&loc=Local"
-	result := fmt.Sprintf("%v:%v@tcp(%v)/%v?%v", user, pass, host, dBName, dBOption)
+	result := fmt.Sprintf("%v:%v@tcp(%v)/%v?%v", m.User, m.Pass, m.Host, m.DBName, dBOption)
 	return result
 }
 
