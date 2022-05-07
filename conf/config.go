@@ -184,7 +184,7 @@ func (c *RegistryConf) String() string {
 }
 
 type AppMysqlConf struct {
-	User         string `json:"user" mapstructure:"host"`
+	User         string `json:"user" mapstructure:"user"`
 	Pass         string `json:"pass" mapstructure:"pass"`
 	Debug        bool   `json:"debug" mapstructure:"debug"`
 	Host         string `json:"host" mapstructure:"host"`
