@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/letusgogo/gobase/util"
 )
 
 // 创建一个 user 请求
@@ -16,8 +15,6 @@ type CreateUserReq struct {
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
-
-var ErrUserDuplicate = &util.ErrInfo{Ret: 100, Msg: "Duplicate user"}
 
 func test(val interface{}) {
 	valInt, ok := val.(int64)
