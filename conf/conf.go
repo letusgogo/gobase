@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/go-redis/redis/v8"
+	"time"
 )
 
 type MysqlConf struct {
@@ -26,11 +28,11 @@ func (m *MysqlConf) String() string {
 }
 
 type RedisConf struct {
-	Addr        string `json:"Addr"`
-	Password    string `json:"Password"`
-	PoolSize    int    `json:"PoolSize"`
-	MaxRetries  int    `json:"MaxRetries"`
-	IdleTimeout int64  `json:"IdleTimeout"`
+	Addr        string        `json:"Addr"`
+	Password    string        `json:"Password"`
+	PoolSize    int           `json:"PoolSize"`
+	MaxRetries  int           `json:"MaxRetries"`
+	IdleTimeout time.Duration `json:"IdleTimeout"`
 }
 
 func (r *RedisConf) String() string {
@@ -44,6 +46,17 @@ func (r *RedisConf) String() string {
 		return fmt.Sprintf("%+v", *r)
 	}
 	return out.String()
+}
+
+func (r *RedisConf) NewRedis() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Network:     "tcp",
+		Addr:        r.Addr,
+		Password:    r.Password,
+		PoolSize:    r.PoolSize,
+		MaxRetries:  r.MaxRetries,
+		IdleTimeout: r.IdleTimeout,
+	})
 }
 
 // influxdb 配置
