@@ -30,11 +30,15 @@ type smsRsp struct {
 
 // telephone 发送短信的号码
 // templateParam 发送的模板消息
-func (s *SmsService) SendSmsMsg(telephone, templateParam string) error {
+func (s *SmsService) SendSmsMsg(telephone string, templateParam interface{}) error {
 	// 开启了 debug 模式不真正发短信
 	if s.smsConf.Debug {
-		log.Warn("send sms msg", zap.String("msg", templateParam))
+		log.Warn("send sms msg", zap.Any("msg", templateParam))
 		return nil
+	}
+	temp, err := json.Marshal(telephone)
+	if err != nil {
+		return err
 	}
 
 	request := requests.NewCommonRequest()
@@ -47,8 +51,7 @@ func (s *SmsService) SendSmsMsg(telephone, templateParam string) error {
 	request.QueryParams["PhoneNumbers"] = telephone
 	request.QueryParams["SignName"] = s.smsConf.SignName
 	request.QueryParams["TemplateCode"] = s.smsConf.TemplateCode
-	request.QueryParams["TemplateParam"] = templateParam
-
+	request.QueryParams["TemplateParam"] = string(temp)
 	response, err := s.smsClient.ProcessCommonRequest(request)
 	if err != nil {
 		return err
