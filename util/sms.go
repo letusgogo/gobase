@@ -36,7 +36,7 @@ func (s *SmsService) SendSmsMsg(telephone string, templateParam interface{}) err
 		log.Warn("send sms msg", zap.Any("msg", templateParam))
 		return nil
 	}
-	temp, err := json.Marshal(telephone)
+	temp, err := json.Marshal(templateParam)
 	if err != nil {
 		return err
 	}
