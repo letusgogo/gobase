@@ -1,21 +1,21 @@
 package util
 
-// 获取一个以 \0 结尾的 c 字符串,如果没有则以长度不变
+// GetGStrFromCStr 获取一个以 \0 结尾的 c 字符串,如果没有则以长度不变
 func GetGStrFromCStr(data []byte) string {
-	vaildByte := make([]byte, 0)
+	validByte := make([]byte, 0)
 	for _, c := range data {
 		// 遇到0 终止
 		if c == 0x00 {
 			break
 		}
-		vaildByte = append(vaildByte, c)
+		validByte = append(validByte, c)
 	}
-	return string(vaildByte)
+	return string(validByte)
 }
 
-// 在 go string 后面补充 \0。
-func GetCStrFromGStr(gstr string) []byte {
-	cstr := []byte(gstr)[0:]
-	cstr = append(cstr, 0x00)
-	return cstr
+// GetCStrFromGStr 在 go string 后面补充 \0。
+func GetCStrFromGStr(gStr string) []byte {
+	cStr := []byte(gStr)[0:]
+	cStr = append(cStr, 0x00)
+	return cStr
 }

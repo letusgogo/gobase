@@ -1,6 +1,6 @@
 package util
 
-// rcp 响应接口
+// RpcResponder rcp 响应接口
 type RpcResponder interface {
 	SetRet(ret int32)
 	SetMsg(msg string)
@@ -11,7 +11,7 @@ type RpcError interface {
 	GetMsg() string
 }
 
-// 定义错误
+// ErrInfo 定义错误
 type ErrInfo struct {
 	Ret int32  // 错误码
 	Msg string // 展示给用户看的
@@ -41,8 +41,8 @@ func (e *ErrInfo) IsErrNot() bool {
 	return e.Is(ErrNot)
 }
 
-//ret=0 成功。
-//noinspection ALL
+// ret=0 成功。
+// noinspection ALL
 var (
 	ErrNot    = &ErrInfo{0, "success", nil}
 	ErrUnknow = &ErrInfo{1, "unknown error", nil}
@@ -53,10 +53,10 @@ var (
 	ErrRpc      = &ErrInfo{5, "rpc call error", nil}
 )
 
-// 从 info 创建一个新的 ErrInfo 类型的对象。
+// NewErrInfo 从 info 创建一个新的 ErrInfo 类型的对象。
 // 当 msg 不为空,则用 msg 替换原 msg
 // 当 err 不为 nil,则用 err 替换 原 err
-//noinspection ALL
+// noinspection ALL
 func NewErrInfo(info *ErrInfo, msg string, err error) *ErrInfo {
 	errInfo := &ErrInfo{
 		Ret: info.Ret,
@@ -85,7 +85,6 @@ func WriteRpcRsp(rspPtr interface{}, rpcError RpcError, data map[string]interfac
 	SetStructVals(rspPtr, data)
 }
 
-//noinspection ALL
 func WriteRpcRspWithMsg(rspPtr interface{}, rpcError RpcError, msg string, data map[string]interface{}) {
 	if nil == data {
 		data = make(map[string]interface{})
