@@ -36,6 +36,22 @@ func TestCompareVersions(t *testing.T) {
 			},
 			want: 0,
 		},
+		{
+			name: "t4",
+			args: args{
+				v1: "2.2.0",
+				v2: "2.3.0",
+			},
+			want: -1,
+		},
+		{
+			name: "t4",
+			args: args{
+				v1: "2.3.0",
+				v2: "2.3.0",
+			},
+			want: 0,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

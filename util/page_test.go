@@ -23,7 +23,7 @@ func TestPageSlice1(t *testing.T) {
 			name: "testEmptySlice",
 			args: args{
 				slice:    emptySlice,
-				pageable: NewGormPage(0, 1),
+				pageable: NewDefaultPage(0, 1),
 			},
 			want:    []string{},
 			wantErr: false,
@@ -32,7 +32,7 @@ func TestPageSlice1(t *testing.T) {
 			name: "test(1,5)Slice",
 			args: args{
 				slice:    slice,
-				pageable: NewGormPage(1, 5),
+				pageable: NewDefaultPage(1, 5),
 			},
 			want:    []int{0, 1, 2, 3, 4},
 			wantErr: false,
@@ -41,7 +41,7 @@ func TestPageSlice1(t *testing.T) {
 			name: "test(2,5)Slice",
 			args: args{
 				slice:    slice,
-				pageable: NewGormPage(2, 5),
+				pageable: NewDefaultPage(2, 5),
 			},
 			want:    []int{5, 6, 7, 8, 9},
 			wantErr: false,
@@ -50,7 +50,7 @@ func TestPageSlice1(t *testing.T) {
 			name: "test(1,5)Slice",
 			args: args{
 				slice:    slice,
-				pageable: NewGormPage(1, 5),
+				pageable: NewDefaultPage(1, 5),
 			},
 			want:    []int{0, 1, 2, 3, 4},
 			wantErr: false,
@@ -65,6 +65,40 @@ func TestPageSlice1(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("PageSlice() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPageSlice2(t *testing.T) {
+	type args[T any] struct {
+		slice    []T
+		pageable Pageable
+	}
+	type testCase[T any] struct {
+		name    string
+		args    args[T]
+		want    []T
+		wantErr bool
+	}
+	tests := []testCase[int]{
+		{
+			name: "test(1,5)Slice",
+			args: args[int]{
+				slice:    []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+				pageable: NewDefaultPage(1, 5),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := PageSlice2(tt.args.slice, tt.args.pageable)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("PageSlice2() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("PageSlice2() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

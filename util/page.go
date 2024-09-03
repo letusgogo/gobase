@@ -5,23 +5,23 @@ import (
 	"reflect"
 )
 
-// 第一页是 pageNo=1
+// Pageable 第一页是 pageNo=1
 type Pageable interface {
 	GetPageNo() int64
 	GetPageSize() int64
 	GetOffset() int64
 }
 
-type GormPage struct {
+type DefaultPage struct {
 	pageNo,
 	pageSize int64
 }
 
-func NewGormPage(pageNo int64, pageSize int64) *GormPage {
-	return &GormPage{pageNo: pageNo, pageSize: pageSize}
+func NewDefaultPage(pageNo int64, pageSize int64) *DefaultPage {
+	return &DefaultPage{pageNo: pageNo, pageSize: pageSize}
 }
 
-func (p *GormPage) GetOffset() int64 {
+func (p *DefaultPage) GetOffset() int64 {
 	// gorm offset == -1 的时候是取消 offset 限制
 	if p.pageSize <= 0 || p.pageNo <= 0 {
 		return -1
@@ -29,11 +29,11 @@ func (p *GormPage) GetOffset() int64 {
 	return (p.pageNo - 1) * p.pageSize
 }
 
-func (p *GormPage) GetPageNo() int64 {
+func (p *DefaultPage) GetPageNo() int64 {
 	return p.pageNo
 }
 
-func (p *GormPage) GetPageSize() int64 {
+func (p *DefaultPage) GetPageSize() int64 {
 	// gorm pageSize == -1 的时候是取消 limit 限制
 	if p.pageSize <= 0 || p.pageNo <= 0 {
 		return -1
@@ -74,4 +74,28 @@ func PageSlice(slice interface{}, pageable Pageable) (interface{}, error) {
 	}
 
 	return dSliceV.Interface(), nil
+}
+
+// PageSlice2 分页函数，使用泛型
+func PageSlice2[T any](slice []T, pageable Pageable) ([]T, error) {
+	pageSize := pageable.GetPageSize()
+	pageNo := pageable.GetPageNo()
+
+	// 不分页
+	if pageSize <= 0 || pageNo <= 0 {
+		return slice, nil
+	}
+
+	// 计算起始和结束位置
+	start := (pageNo - 1) * pageSize
+	if start >= int64(len(slice)) {
+		return []T{}, nil
+	}
+	end := start + pageSize
+	if end > int64(len(slice)) {
+		end = int64(len(slice))
+	}
+
+	// 返回分页后的切片
+	return slice[start:end], nil
 }
