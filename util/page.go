@@ -41,7 +41,9 @@ func (p *DefaultPage) GetPageSize() int64 {
 	return p.pageSize
 }
 
-func PageSlice(slice interface{}, pageable Pageable) (interface{}, error) {
+// PageSliceOle 分页函数，使用反射
+// Deprecated use PageSlice
+func PageSliceOle(slice interface{}, pageable Pageable) (interface{}, error) {
 	pageSize := pageable.GetPageSize()
 	pageNo := pageable.GetPageNo()
 
@@ -76,8 +78,8 @@ func PageSlice(slice interface{}, pageable Pageable) (interface{}, error) {
 	return dSliceV.Interface(), nil
 }
 
-// PageSlice2 分页函数，使用泛型
-func PageSlice2[T any](slice []T, pageable Pageable) ([]T, error) {
+// PageSlice 分页函数，使用泛型
+func PageSlice[T any](slice []T, pageable Pageable) ([]T, error) {
 	pageSize := pageable.GetPageSize()
 	pageNo := pageable.GetPageNo()
 
